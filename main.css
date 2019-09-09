@@ -2,27 +2,36 @@ html,
 body {
   width: 100%;
   height: 100%;
+  margin: 0;
+  padding:0 ;
+} 
+
+
+* {
+  box-sizing: border-box;
 }
 
-.first,
-.second {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* body {
+  min-height: 1200px;
+} */
+
+
+/* Bars for intake chart */
+
+.category-Approved{
+  fill: #7b6888
 }
 
-.dot_white {
-    fill:#CF1264;
+.category-Rejected{
+  fill: #a05d56
 }
 
-.dot_black {
-    fill: #681E70;
-}
+.category-Filed.by.LEA{
+  fill: #ff8c00
+} 
 
-.dot_hispanic {
-    fill: #107386;
+.axis .domain {
+  display: none;
 }
 
 /* pallette inspired by https://color.adobe.com/Tema-colore-54-color-theme-11926433/?showPublished=true */

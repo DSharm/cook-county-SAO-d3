@@ -75,6 +75,7 @@ intake_year_status_gender <- intake %>%
   group_by(receive_year,initiation_result, GENDER) %>% 
   summarise(cases = n()) %>% 
   filter(receive_year > 2010 & receive_year < 2019) %>% 
+  spread(GENDER,cases) %>% 
   rename(Year=receive_year)
 
 write_json(intake_year_status_gender,here("CC Dashboard","processed_data","intake_year_status_gender.json"))
