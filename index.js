@@ -1,82 +1,3 @@
-/*
-Plan for building dashboard:
-- Create main Intake charts
-    - Intake bar chart, overall, by year
-    - Intake bar chart, stacked gender
-    - Intake bar chart, stacked race
-    - Intake bar chart, stacked offense type
-    - Intake pop out pie charts by  offense, gender, race
-- Add interactivity to intake charts
-    - mouseover bars, pop out pie chart
-    - rearrange stacked bars
-    - create filter/ drop down for bar charts
-
-- Create main disposition chart
-    - sankey diagram for flow of outcomes for each case
-    - default - all offenses, latest year, all races and all genders
-- Add interactivity to disposition chart
-    - Drop down menu for year (pick a year), and race/gender/offense type (choose to add however many)
-    - when plotting different year, can flow be interactive? animation of convictions
-    and non convictions going to different outcomes? 
-    - static chart should gray out all other flows not moused over
-
-- Create main sentence type chart
-    - tree map of sentence type, default year
-- Add interactivity
-    - slider for year
-    - Offense, gender, race filters
-
-*/
-
-
-// Code by: Damini Sharma
-// For this reverse scatterplot, I heavily referenced Andrew McNutt's solutions to the week7 D3 exercise
-// and code showed by Alex Engler in class
-// To run my files I did the following:
-    // npm install -g live-server
-    // then: live-server
-
-
-// Set the dimensions of my plot
-/*
-const height = 600;
-const width = 800;
-const margin = {top: 200, left: 60, right: 20, bottom: 30};
-
-const plotWidth = width - margin.left - margin.right;
-const plotHeight = height - margin.bottom - margin.top;
-*/
-// reference: https://bl.ocks.org/63anp3ca/6bafeb64181d87750dbdba78f8678715
-// https://css-tricks.com/scale-svg/
-// http://learnjsdata.com/group_data.html
-
-
-/*
-var svg = d3.select("body").append('svg').attr('width',width).attr('height',height);
-var g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-console.log(height);
-console.log(svg.attr('height'));
-
-
-
-    
-    // The scale spacing the groups:
-    var x0 = d3.scaleBand()
-        .rangeRound([0, plotWidth])
-        .paddingInner(0.3);
-
-    // The scale for spacing each group's bar:
-    var x1 = d3.scaleBand()
-        .padding(0.05);
-
-    var y = d3.scaleLinear()
-        .rangeRound([plotHeight,0]);
-
-    var z = d3.scaleOrdinal()
-        .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
-*/
-
-
 // Code goes here
 var margin = {
     top: 100,
@@ -115,14 +36,16 @@ var svg = d3.select("body").append("svg")
   .append("g")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     //d3.json("processed_data/intake_year_status_gender.json")
-    d3.json("processed_data/intake_year_status_gender.json")
+
+d3.json("processed_data/intake_year_status_gender.json")
         .then(function(data) {
             
             dataset = data;
+            
             dataset.forEach(function(d){
                 d.Total = d.Female + d.Male;
             });
-
+            //console.log(dataset);
             nested_total = d3.nest()
             .key(function(d) {
                 return d.Year;
@@ -140,7 +63,7 @@ var svg = d3.select("body").append("svg")
 
 
 
-            console.log(nested_total);
+            //console.log(nested_total);
 
             // var keys = d3.keys(data[0]).slice(1);
             // console.log(d3.max(data, function(d) {return d.Year}));
@@ -151,7 +74,8 @@ var svg = d3.select("body").append("svg")
             var results = nested_total[0].values.map(function(d, i) {
                 return d.key;
               });
-            
+            console.log(results);  
+            console.log(results);
             x_categories.domain(results).rangeRound([0, x_groups.bandwidth()]);
             
             //var values = ['value 1', 'value 2', 'value 3']; 
@@ -275,9 +199,81 @@ var svg = d3.select("body").append("svg")
               })
               .attr("height", function(d) {
                 return height - y(d.value);
-              });
+              })
+              .on("mouseover",mouseover);// mouseout is defined below.
+             
+            function mouseover(d){  // utility function to be called on mouseover.
+                // filter for selected state.
+              var result = nested_gender.filter(function(s){ return s.key == d[0];})[0],
+                  nD = d3.keys(st.freq).map(function(s){ return {type:s, freq:st.freq[s]};});
+                   
+                // call update functions of pie-chart and legend.    
+              pC.update(nD);
+            }
+            var pC = {};
+            pC.update = function(nD){
+              arcs.selectAll("path").data(pie(nD)).transition().duration(500);
+          }   
 
+            // DRAW PIE CHART
+            // First create different nested data for Gender
+            nested_gender = d3.nest()
+            .key(function(d) {
+                return d.Year;
+            })
+            .key(function(d){
+                return d.initiation_result;
+            })
+            .rollup(function(leaves) {
+                return [{
+                  key: 'Male',
+                  value: leaves[0]['Male']
+                },{
+                  key: 'Female',
+                  value: leaves[0]['Female']
+                }]
+              })
+            .entries(dataset);
+
+            nested_gender_test = nested_gender[0].values[0].value;
+            console.log(nested_gender_test);
+            var pie = d3.pie().value(function(d) { return d.value ;} );
+
+            var w = 200;
+            var h = 200;
+
+            var outerRadius = w/2;
+            var innerRadius = 0;
+            var arc = d3.arc()
+            .innerRadius(innerRadius)
+            .outerRadius(outerRadius);
+
+            var pie_svg = d3.select('body')
+                .append("svg")
+                .attr('width',w)
+                .attr('height',h);
             
+            console.log(pie(nested_gender_test));
+            // Set up groups
+            var arcs = pie_svg.selectAll("g.arc")
+              .data(pie(nested_gender_test))
+              .enter()
+              .append("g")
+              .attr("class","arc")
+              .attr("transform", "translate(" + +outerRadius + "," + +outerRadius + ")");
+
+            // Draw arcs paths
+            arcs.append("path")
+                .attr("fill",function(d,i) {
+                  return color(i);
+                })
+                .attr("d",arc);
+
+
+
+
+
+
             
             })
 
@@ -289,6 +285,24 @@ var svg = d3.select("body").append("svg")
                           //console.log(data)
                       }
                     });
+
+/*
+
+next steps: figure out if nested sructure allows for pie chart to be created on the side
+http://bl.ocks.org/cflavs/695d3215ccbce135d3bd
+
+
+if bar chart and pie chart working interactively, clean up code
+add dispositions (and sentencing?) data plus nested structures
+add functions to choose different parts of the data to be turned into bar chart
+
+change categories for intake - other too small
+
+
+
+*/
+
+
 
 //xcode dump
 
@@ -581,4 +595,83 @@ var svg = d3.select("body").append("svg")
 //         .attr('font-family', 'tahoma')
 //         .attr('font-size',12);
 // }
+
+/*
+Plan for building dashboard:
+- Create main Intake charts
+    - Intake bar chart, overall, by year
+    - Intake bar chart, stacked gender
+    - Intake bar chart, stacked race
+    - Intake bar chart, stacked offense type
+    - Intake pop out pie charts by  offense, gender, race
+- Add interactivity to intake charts
+    - mouseover bars, pop out pie chart
+    - rearrange stacked bars
+    - create filter/ drop down for bar charts
+
+- Create main disposition chart
+    - sankey diagram for flow of outcomes for each case
+    - default - all offenses, latest year, all races and all genders
+- Add interactivity to disposition chart
+    - Drop down menu for year (pick a year), and race/gender/offense type (choose to add however many)
+    - when plotting different year, can flow be interactive? animation of convictions
+    and non convictions going to different outcomes? 
+    - static chart should gray out all other flows not moused over
+
+- Create main sentence type chart
+    - tree map of sentence type, default year
+- Add interactivity
+    - slider for year
+    - Offense, gender, race filters
+
+// Code by: Damini Sharma
+// For this reverse scatterplot, I heavily referenced Andrew McNutt's solutions to the week7 D3 exercise
+// and code showed by Alex Engler in class
+// To run my files I did the following:
+    // npm install -g live-server
+    // then: live-server
+
+
+// Set the dimensions of my plot
+/*
+const height = 600;
+const width = 800;
+const margin = {top: 200, left: 60, right: 20, bottom: 30};
+
+const plotWidth = width - margin.left - margin.right;
+const plotHeight = height - margin.bottom - margin.top;
 */
+// reference: https://bl.ocks.org/63anp3ca/6bafeb64181d87750dbdba78f8678715
+// https://css-tricks.com/scale-svg/
+// http://learnjsdata.com/group_data.html
+// https://stackoverflow.com/questions/37690018/d3-nested-grouped-bar-chart
+
+
+/*
+var svg = d3.select("body").append('svg').attr('width',width).attr('height',height);
+var g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+console.log(height);
+console.log(svg.attr('height'));
+
+
+
+    
+    // The scale spacing the groups:
+    var x0 = d3.scaleBand()
+        .rangeRound([0, plotWidth])
+        .paddingInner(0.3);
+
+    // The scale for spacing each group's bar:
+    var x1 = d3.scaleBand()
+        .padding(0.05);
+
+    var y = d3.scaleLinear()
+        .rangeRound([plotHeight,0]);
+
+    var z = d3.scaleOrdinal()
+        .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+*/
+
+
+
+
