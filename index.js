@@ -42,9 +42,7 @@ d3.json("processed_data/intake_year_status_gender.json")
             
             dataset = data;
             
-            dataset.forEach(function(d){
-                d.Total = d.Female + d.Male;
-            });
+            
             //console.log(dataset);
             nested_total = d3.nest()
             .key(function(d) {
@@ -54,16 +52,24 @@ d3.json("processed_data/intake_year_status_gender.json")
                 return d.initiation_result;
             })
             .rollup(function(leaves) {
-                return [{
-                  key: 'total',
-                  value: leaves[0]['Total']
-                }]
-              })
+              return [{
+                key: 'Female',
+                value: leaves[0]['Female']
+              }, {
+                key: 'Male',
+                value: leaves[0]['Male']
+              }];
+            })
             .entries(dataset);
 
+          nested_total.forEach(function(d){
+            d.values.forEach(function(d) {
+              //console.log(d.value[0].value);
+              d.Total = d.value[0].value + d.value[1].value; 
+            })  
+          });
 
-
-            //console.log(nested_total);
+            console.log(nested_total);
 
             // var keys = d3.keys(data[0]).slice(1);
             // console.log(d3.max(data, function(d) {return d.Year}));
@@ -72,26 +78,28 @@ d3.json("processed_data/intake_year_status_gender.json")
             x_groups.domain(nested_total.map(function(d) { return d.key; }));
 
             var results = nested_total[0].values.map(function(d, i) {
+                console.log(d.key);
                 return d.key;
               });
-            console.log(results);  
-            console.log(results);
-            x_categories.domain(results).rangeRound([0, x_groups.bandwidth()]);
+            
+              x_categories.domain(results).rangeRound([0, x_groups.bandwidth()]);
             
             //var values = ['value 1', 'value 2', 'value 3']; 
             //console.log(nested_total[0].values[0]);
-            var values = nested_total[0].values[0].value.map(function(d, i) {
+            var values = "Total";
+            //console.log(values);
 
-                //console.log(d.key);
-                return d.key;
-            });
+            // var values = nested_total[0].values[0].value.map(function(d, i) {
+            //     //console.log(d.value);
+            //     return d.key;
+            // });
             x_values.domain(values).rangeRound([0, x_categories.bandwidth()]);
             
             y.domain([0, d3.max(nested_total, function(d) {
+                //console.log(d.values);
                 return d3.max(d.values, function(d) {
-                    return d3.max(d.value, function(d) {
-                        return d.value;
-                    })                    
+                    //console.log(d.Total); 
+                    return d.Total;                   
                 })
               })]);
             
@@ -122,6 +130,7 @@ d3.json("processed_data/intake_year_status_gender.json")
           
             var categories_g = groups_g.selectAll(".category")
               .data(function(d) {
+                //console.log(d);
                 return d.values;
               })
               .enter().append("g")
@@ -150,20 +159,20 @@ d3.json("processed_data/intake_year_status_gender.json")
             //   .text(function(d) {
             //     return d;
             //   })
-              
+            /*  
             var values_g = categories_g.selectAll(".value")
               .data(function(d) {
-                 // console.log(d.value);
+                //console.log(d.Total);
                 return d.value;
               })
               .enter().append("g")
               .attr("class", function(d) {
-                return 'value value-' + d.key;
+                return 'value value-' + 'Total';
               })
               .attr("transform", function(d) {
-                return "translate(" + x_values(d.key) + ",0)";
+                return "translate(" + x_values(d.Total) + ",0)";
               });
-          
+              */
             // var values_labels = values_g.selectAll('.value-label')
             //   .data(function(d) {
             //     return [d.key];
@@ -184,39 +193,100 @@ d3.json("processed_data/intake_year_status_gender.json")
             //   })
           
             //console.log(values_g);
-            var rects = values_g.selectAll('.rect')
+            var rects = categories_g.selectAll('.rect')
               .data(function(d) {
+                //console.log([d]);
                 return [d];
               })
               .enter().append("rect")
               .attr("class", "rect")
-              .attr("width", x_values.bandwidth())
+              .attr("width", 15)
               .attr("x", function(d) {
                 return 0;
               })
               .attr("y", function(d) {
-                return y(d.value);
+                return y(d.Total);
               })
               .attr("height", function(d) {
-                return height - y(d.value);
+                return height - y(d.Total);
               })
-              .on("mouseover",mouseover);// mouseout is defined below.
+              .on("mouseover",mouseover)
+              .on("mouseout",mouseout);// mouseout is defined below.
              
             function mouseover(d){  // utility function to be called on mouseover.
                 // filter for selected state.
-              var result = nested_gender.filter(function(s){ return s.key == d[0];})[0],
-                  nD = d3.keys(st.freq).map(function(s){ return {type:s, freq:st.freq[s]};});
+                console.log(d.value);
+                nD = d.value;
+                //var result = nested_total.filter(function(s){ return s.key == d[0];})[0],
+                //nD = d3.keys(st.freq).map(function(s){ return {type:s, freq:st.freq[s]};});
                    
                 // call update functions of pie-chart and legend.    
-              pC.update(nD);
+              pC.update(nD,"on");
+            }
+
+            function mouseout(d){
+                pC.update(d,"off");
+
             }
             var pC = {};
-            pC.update = function(nD){
-              arcs.selectAll("path").data(pie(nD)).transition().duration(500);
+            
+            pC.update = function(nD, mouse){
+              
+                var w = 200;
+                var h = 200;
+
+                var outerRadius = w/2;
+                var innerRadius = 0;
+                var arc = d3.arc()
+                .innerRadius(innerRadius)
+                .outerRadius(outerRadius);
+                
+                var pie = d3.pie().value(function(d) { return d.value ;} );
+
+                var pie_svg = d3.select('body')
+                    .append("svg")
+                    .attr("class","pie")
+                    .attr('width',w)
+                    .attr('height',h);
+                
+                //console.log(pie(nested_gender_test));
+                // Set up groups
+                var arcs = pie_svg.selectAll("g.arc")
+                  .data(pie(nD))
+                  .enter()
+                  .append("g")
+                  .attr("class","arc")
+                  .attr("transform", "translate(" + +outerRadius + "," + +outerRadius + ")");
+
+              if (mouse === "on") {
+                
+
+                // Draw arcs paths
+                arcs.append("path")
+                    .attr("fill",function(d,i) {
+                      return color(i);
+                    })
+                    .attr("d",arc);
+
+
+              }
+              
+              else if (mouse === "off") {
+                d3.selectAll(".pie")
+                  .transition()
+                  .duration(50)
+                  .attr('opacity',0)
+                  .remove();
+              }
+
+
+
+              //arcs.selectAll("path").data(pie(nD)).transition().duration(500);
           }   
 
             // DRAW PIE CHART
             // First create different nested data for Gender
+            /*
             nested_gender = d3.nest()
             .key(function(d) {
                 return d.Year;
@@ -236,9 +306,9 @@ d3.json("processed_data/intake_year_status_gender.json")
             .entries(dataset);
 
             nested_gender_test = nested_gender[0].values[0].value;
-            console.log(nested_gender_test);
+            //console.log(nested_gender_test);
             var pie = d3.pie().value(function(d) { return d.value ;} );
-
+              
             var w = 200;
             var h = 200;
 
@@ -253,7 +323,7 @@ d3.json("processed_data/intake_year_status_gender.json")
                 .attr('width',w)
                 .attr('height',h);
             
-            console.log(pie(nested_gender_test));
+            //console.log(pie(nested_gender_test));
             // Set up groups
             var arcs = pie_svg.selectAll("g.arc")
               .data(pie(nested_gender_test))
@@ -269,7 +339,7 @@ d3.json("processed_data/intake_year_status_gender.json")
                 })
                 .attr("d",arc);
 
-
+                */
 
 
 
