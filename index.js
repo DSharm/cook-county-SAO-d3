@@ -102,14 +102,14 @@ function nested(dataset) {
               d.Race = [d.value[2],d.value[3],d.value[4],d.value[5],d.value[6]];
             })  
           });
-        console.log(nested_total);
+        //console.log(nested_total);
         return nested_total;
 };
 
 // make bar chart
 function makebarChart(dataset) {
   
-  var x_groups = d3.scaleBand()
+  var x_years = d3.scaleBand()
   .rangeRound([margin.left, barChartWidth], .1)
   .padding(0.08);
 
@@ -120,7 +120,7 @@ function makebarChart(dataset) {
   var y = d3.scaleLinear()
     .range([barChartHeight, 0]);
     
-  var groups_axis = d3.axisBottom(x_groups);
+  var groups_axis = d3.axisBottom(x_years);
   var categories_axis = d3.axisBottom(x_categories);
   var values_axis = d3.axisBottom(x_categories);
   var yAxis = d3.axisLeft(y).tickFormat(d3.format(".2s"));
@@ -132,14 +132,14 @@ function makebarChart(dataset) {
     })  
   });
 
-  x_groups.domain(dataset.map(function(d) { return d.key; }));
+  x_years.domain(dataset.map(function(d) { return d.key; }));
 
   var results = dataset[0].values.map(function(d, i) {
       //console.log(d.key);
       return d.key;
     });
   
-    x_categories.domain(results).rangeRound([0, x_groups.bandwidth()]);
+    x_categories.domain(results).rangeRound([0, x_years.bandwidth()]);
   
   //var values = ['value 1', 'value 2', 'value 3']; 
   //console.log(nested_total[0].values[0]);
@@ -188,7 +188,7 @@ function makebarChart(dataset) {
       return 'group group-' + d.key;
     })
     .attr("transform", function(d) {
-      return "translate(" + x_groups(d.key) + ",0)";
+      return "translate(" + x_years(d.key) + ",0)";
     });
 
   var categories_g = groups_g.selectAll(".category")

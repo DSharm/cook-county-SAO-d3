@@ -14,33 +14,6 @@ body {
  
 }
 
-/* * {
-  box-sizing: border-box;
-} */
-
-/* body {
-  min-height: 1200px;
-} */
-
-
-/* Chart and SVG styling */
-/* Referenced https://github.com/emmacooperpeterson/human_trafficking_sentencing/blob/master/styles.css */
-
-/* #chart {
-  position: relative;
-  height: 0;
-  width: 100%;
-  padding:0 ;
-}
-
-#chart > svg {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  left: 0;
-  top:0;
-} */
-
 
 /* Bars for intake chart */
 
