@@ -423,7 +423,7 @@ next steps 9/11/19:
 - make legends for bar chart and pie charts dynamic (or fix labels for pie charts to not overlap)
 - add ability to keep pie charts visible e.g. by click on a given bar so can hover over pie chart
 to see values and %'s 
-
+- add ability to see value labels on bars on tool tip
 - make bar chart legend interactive - e.g. when hovering on legend, highlight relevant bars?
 
 
