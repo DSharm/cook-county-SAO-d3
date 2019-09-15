@@ -7,10 +7,10 @@ libs <- c("tidyverse", "stringr", "readr", "dplyr", "ggplot2", "readstata13","fo
 lapply(libs, library, character.only=TRUE)
 
 # Read in the data
-intake <- read.csv(here('data_source','SAO Data','Intake.csv'),stringsAsFactors = FALSE) 
-initiation <- read.csv(here("data_source","SAO Data","Initiation.csv"),stringsAsFactors = FALSE) 
-sentence <- read.csv(here("data_source","SAO Data","Sentencing.csv"),stringsAsFactors = FALSE) 
-disposition <- read.csv(here("data_source","SAO Data","Dispositions.csv"),stringsAsFactors = FALSE) 
+intake <- read.csv(here('SAO Data','Intake.csv'),stringsAsFactors = FALSE) 
+initiation <- read.csv(here("SAO Data","Initiation.csv"),stringsAsFactors = FALSE) 
+sentence <- read.csv(here("SAO Data","Sentencing.csv"),stringsAsFactors = FALSE) 
+disposition <- read.csv(here("SAO Data","Dispositions.csv"),stringsAsFactors = FALSE) 
 
 #################################### PREPARE DATA FOR BAR PLOTS ############################################# 
 
@@ -69,7 +69,7 @@ intake %<>%
         RACE == "HISPANIC" ~ "Latinx",
         RACE == "White [Hispanic or Latino]" ~ "Latinx",
         RACE == "White/Black [Hispanic or Latino]" ~ "Latinx",
-        RACE == "Unknown" ~ "Unknown",
+        RACE == "Unknown" ~ "Other",
         TRUE ~ "Other"
       )) %>% 
   mutate(initiation_result = case_when(
@@ -102,7 +102,7 @@ intake %<>%
 #     RACE == "HISPANIC" ~ "Latinx",
 #     RACE == "White [Hispanic or Latino]" ~ "Latinx",
 #     RACE == "White/Black [Hispanic or Latino]" ~ "Latinx",
-#     RACE == "Unknown" ~ "Unknown",
+#     RACE == "Unknown" ~ "Other",
 #     TRUE ~ "Other"
 #   ))
 # 
@@ -124,7 +124,7 @@ intake_year_status <- intake %>%
   spread(initiation_result, cases) %>% 
   rename(Year=receive_year)
 
-write_json(intake_year_status,here("CC Dashboard","processed_data","intake_year_status.json"))
+write_json(intake_year_status,here("processed_data","intake_year_status.json"))
 
 # Cases approved vs rejected - by gender
 intake_year_status_gender <- intake %>% 
@@ -134,7 +134,7 @@ intake_year_status_gender <- intake %>%
   spread(GENDER,cases) %>% 
   rename(Year=receive_year)
 
-write_json(intake_year_status_gender,here("CC Dashboard","processed_data","intake_year_status_gender.json"))
+write_json(intake_year_status_gender,here("processed_data","intake_year_status_gender.json"))
 
 
 # Cases approved vs rejected - by race
@@ -145,11 +145,11 @@ intake_year_status_race <- intake %>%
   spread(Race_short,cases) %>% 
   rename(Year=receive_year)
 
-write_json(intake_year_status_race,here("CC Dashboard","processed_data","intake_year_status_race.json"))
+write_json(intake_year_status_race,here("processed_data","intake_year_status_race.json"))
 
-# intake_year_race_gender <- inner_join(intake_year_status_gender,intake_year_status_race,by=c("Year","initiation_result"))
-# 
-# write_json(intake_year_race_gender,here("CC Dashboard","processed_data","intake_year_race_gender.json"))
+intake_year_race_gender <- inner_join(intake_year_status_gender,intake_year_status_race,by=c("Year","initiation_result"))
+
+write_json(intake_year_race_gender,here("processed_data","intake_year_race_gender.json"))
 
 ############################################# PLOT 2 ############################################# 
 
@@ -250,7 +250,7 @@ disposition %<>%
     RACE == "HISPANIC" ~ "Latinx",
     RACE == "White [Hispanic or Latino]" ~ "Latinx",
     RACE == "White/Black [Hispanic or Latino]" ~ "Latinx",
-    RACE == "Unknown" ~ "Unknown",
+    RACE == "Unknown" ~ "Other",
     TRUE ~ "Other"
   )) 
 
@@ -262,7 +262,7 @@ dispo_year_status <- disposition %>%
   spread(conviction, cases) %>% 
   rename(Year=dispo_year)
 
-write_json(dispo_year_status,here("CC Dashboard","processed_data","dispo_year_status.json"))
+write_json(dispo_year_status,here("processed_data","dispo_year_status.json"))
 
 # Cases convicted/not convicted - by conviction detailed
 dispo_year_status_conviction_d <- disposition %>% 
@@ -272,7 +272,7 @@ dispo_year_status_conviction_d <- disposition %>%
   spread(conviction_d, cases) %>% 
   rename(Year=dispo_year)
 
-write_json(dispo_year_status_conviction_d,here("CC Dashboard","processed_data","dispo_year_status_conviction_d.json"))
+write_json(dispo_year_status_conviction_d,here("processed_data","dispo_year_status_conviction_d.json"))
 
 # Cases convicted/not convicted - by Gender
 dispo_year_status_gender <- disposition %>% 
@@ -282,7 +282,7 @@ dispo_year_status_gender <- disposition %>%
   spread(GENDER, cases) %>% 
   rename(Year=dispo_year)
 
-write_json(dispo_year_status_gender,here("CC Dashboard","processed_data","dispo_year_status_gender.json"))
+write_json(dispo_year_status_gender,here("processed_data","dispo_year_status_gender.json"))
 
 # Cases convicted/not convicted - by Race
 dispo_year_status_race <- disposition %>% 
@@ -292,7 +292,7 @@ dispo_year_status_race <- disposition %>%
   spread(Race_short, cases) %>% 
   rename(Year=dispo_year)
 
-write_json(dispo_year_status_race,here("CC Dashboard","processed_data","dispo_year_status_race.json"))
+write_json(dispo_year_status_race,here("processed_data","dispo_year_status_race.json"))
 
 ############################################# PLOT 3 ############################################# 
 
@@ -316,7 +316,7 @@ sentence %<>%
     RACE == "HISPANIC" ~ "Latinx",
     RACE == "White [Hispanic or Latino]" ~ "Latinx",
     RACE == "White/Black [Hispanic or Latino]" ~ "Latinx",
-    RACE == "Unknown" ~ "Unknown",
+    RACE == "Unknown" ~ "Other",
     TRUE ~ "Other"
   )) %>% 
   mutate(sentence_type_short = case_when(
@@ -340,7 +340,7 @@ sent_year_status <- sentence %>%
   spread(sentence_type_short, cases) %>% 
   rename(Year=sentence_year)
 
-write_json(sent_year_status,here("CC Dashboard","processed_data","sent_year_status.json"))
+write_json(sent_year_status,here("processed_data","sent_year_status.json"))
 
 
 # Sentence Types - Gender  
@@ -351,7 +351,7 @@ sent_year_status_gender <- sentence %>%
   spread(GENDER, cases) %>% 
   rename(Year=sentence_year)
 
-write_json(sent_year_status_gender,here("CC Dashboard","processed_data","sent_year_status_gender.json"))
+write_json(sent_year_status_gender,here("processed_data","sent_year_status_gender.json"))
 
 
 # Sentence Types - Race  
@@ -362,4 +362,4 @@ sent_year_status_race <- sentence %>%
   spread(Race_short, cases) %>% 
   rename(Year=sentence_year)
 
-write_json(sent_year_status_race,here("CC Dashboard","processed_data","sent_year_status_race.json"))
+write_json(sent_year_status_race,here("processed_data","sent_year_status_race.json"))

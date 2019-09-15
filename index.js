@@ -10,10 +10,10 @@
 // https://next.plnkr.co/edit/qGZ1YuyFZnVtp04bqZki?p=preview&utm_source=legacy&utm_medium=worker&utm_campaign=next&preview
 
 // Set up margins, width, and chart sizes
-var margin = {top: 40,right: 100,bottom: 25,left: 40};
-var width = 900;
+var margin = {top: 40,right: 40,bottom: 25,left: 40};
+var width = 1000;
 var height = 700;
-var barChartWidth = 0.75 * width - margin.right;
+var barChartWidth = 0.9 * width - margin.right;
 var barChartHeight = height  - margin.top*9;
 var pieChartsWidth = 0.1 * width;
 var pieChartsHeight = 0.5 * barChartHeight;
@@ -48,12 +48,15 @@ var color_gender = d3.scaleOrdinal()
 // Load data
 Promise.all([
   d3.json("processed_data/intake_year_race_gender.json"),
+  d3.json("processed_data/dispo_year_race_gender.json")
 ]).then(function(allData) {
   makeVis(allData);
+  update();
 });
 
 function makeVis(allData) {
   nested_data = nested(allData[0]);
+  console.log(nested_data);
   makebarChart(nested_data);
 };
 
@@ -87,9 +90,6 @@ function nested(dataset) {
               {
                 key: 'Other',
                 value: leaves[0]['Other']
-              },{
-                key: 'Unknown',
-                value: leaves[0]['Unknown']
               }];
             })
             .entries(dataset);
@@ -99,7 +99,7 @@ function nested(dataset) {
               // ideally make this more dynamic / set values somewhere else
               d.Total = d.value[0].value + d.value[1].value; 
               d.Gender = [d.value[0],d.value[1]];
-              d.Race = [d.value[2],d.value[3],d.value[4],d.value[5],d.value[6]];
+              d.Race = [d.value[2],d.value[3],d.value[4],d.value[5]];
             })  
           });
         //console.log(nested_total);
@@ -111,7 +111,7 @@ function makebarChart(dataset) {
   
   var x_years = d3.scaleBand()
   .rangeRound([margin.left, barChartWidth], .1)
-  .padding(0.08);
+  .padding(0.07);
 
   var x_categories = d3.scaleBand();
 
@@ -178,7 +178,7 @@ function makebarChart(dataset) {
             .text("Intake - Outcome of Cases Entering SAO System")
             .attr("text-anchor","middle")
             .attr('font-family', 'tahoma')
-            .attr('font-size',12);
+            .attr('font-size',14);
   
 
   var groups_g = barChart.selectAll(".group")
@@ -283,12 +283,28 @@ function makebarChart(dataset) {
 
 };
 
+// //Event listener for button
+// d3.selectAll(".button").on("change",function(d){
+//   dataset = this.id;
+//   console.log(dataset);
+//   update(dataset);
+// });
+
+function update(data) {
+  if (data === "Intake") {
+    makebarChart(allData[0]);
+  }
+  else if (data === "Disposition") {
+    makebarChart(allData[1]);
+  }
+}
+
 function mouseover(d){  // utility function to be called on mouseover.
   gender = d.Gender;
   race = d.Race;
        
   // call update functions of pie-chart and legend.    
-pC.update(gender,race,"on");
+  pC.update(gender,race,"on");
 }
 
 function mouseout(d){
@@ -302,7 +318,6 @@ pC.update = function(gender,race, mouse){
 
   if (mouse === "on") {
 
-  // referenced https://bl.ocks.org/laxmikanta415/dc33fe11344bf5568918ba690743e06f  
   var w = 170;
   var h = 170;
 
@@ -312,90 +327,50 @@ pC.update = function(gender,race, mouse){
   var arc = d3.arc().innerRadius(innerRadius).outerRadius(outerRadius);
   var pie = d3.pie().value(function(d) { return d.value ;} );
 
-  // Set up groups
-  gender_chart_x = pieChartsWidth * 5 + margin.left;
+  function midAngle(d) { return d.startAngle + (d.endAngle - d.startAngle) / 2; } 
+    
+  var radius = Math.min(w, h)/2;
+  var outerArc_gender = d3.arc()
+        .outerRadius(radius * 1.1)
+        .innerRadius(radius * 1.1);
+  
+  // referenced https://bl.ocks.org/laxmikanta415/dc33fe11344bf5568918ba690743e06f  
+  // GENDER BREAKDOWN
+  gender_chart_x = pieChartsWidth * 5 + margin.left;  
 
-  pieChart = svg.append("g")
+  pieChart_gender = svg.append("g")
     .attr("class", "pie")
     .attr('width',pieChartsWidth)
     .attr('height',pieChartsHeight)
     .attr("transform", "translate(" + gender_chart_x + "," + barChartHeight*1.7 + ")");
     
-    pieChart
-    .append("g")
-    .attr("class", "slices");
-    pieChart.append('g')
+  pieChart_gender.append('g')
     .attr("class", "labels");
-    pieChart.append("g")
+  pieChart_gender.append("g")
     .attr("class", "lines"); 
 
-    pieChart.selectAll('path')
+  pieChart_gender.selectAll('path')
     .data(pie(gender))
     .enter()
     .append('path')
     .attr('d', arc)
     .attr("fill",function(d,i) {return color_gender(i);})
 
-    pieChart.append('g').classed('labels',true);
-    pieChart.append('g').classed('lines',true);    
-
-
-    // .selectAll("g.arc")
-    // .data(pie(gender))
-    // .enter()
-    // .append("g")
-    // .attr("class","arc")
-    // .attr("transform", "translate(" + +outerRadius + "," + +outerRadius + ")");
-
-  
-  // var arcs_race = svg
-  //   .append("g")
-  //   .attr("class", "pie")
-  //   .attr('width',pieChartsWidth)
-  //   .attr('height',pieChartsHeight)
-  //   .attr("transform", "translate(" + margin.left + "," + barChartHeight*1.4 + ")")
-  //   .selectAll("g.arc")
-  //   .data(pie(race))
-  //   .enter()
-  //   .append("g")
-  //   .attr("class","arc")
-  //   .attr("transform", "translate(" + +outerRadius + "," + +outerRadius + ")");
-
-    //console.log(arcs_race);
-
+    pieChart_gender.append('g').classed('labels',true);
+    pieChart_gender.append('g').classed('lines',true);    
     
-
-    // Draw arcs paths
-
-    // fix labels to look like this and add values: http://bl.ocks.org/dbuezas/9306799
-    // arcs_gender.append("path")
-    //     .attr("fill",function(d,i) {
-    //       return color_gender(i);
-    //     })
-    //     .attr("d",arc);
-    
-    
-
-    function midAngle(d) { return d.startAngle + (d.endAngle - d.startAngle) / 2; } 
-    
-    var radius = Math.min(w, h)/2;
-    var outerArc = d3.arc()
-        .outerRadius(radius * 1.1)
-        .innerRadius(radius * 1.1);
-
-    
-    var polyline = pieChart.select('.lines')
+    var polyline_gender = pieChart_gender.select('.lines')
                       .selectAll('polyline')
                       .data(pie(gender))
                       .enter().append('polyline')
                       .attr('points', function(d) {
 
-            var pos = outerArc.centroid(d);
-            pos[0] = radius * 0.95 * (midAngle(d) < Math.PI ? 1 : -1);
-            return [arc.centroid(d), outerArc.centroid(d), pos]
+            var pos_gender = outerArc_gender.centroid(d);
+            pos_gender[0] = radius * 0.95 * (midAngle(d) < Math.PI ? 1 : -1);
+            return [arc.centroid(d), outerArc_gender.centroid(d), pos_gender]
         });
     
-    pieChart.append("g")
+    pieChart_gender.append("g")
     .attr("class", "pie title")
     .append("text")
     .attr("transform", "translate(" + -(pieChartsWidth/1.8) + "," + (-pieChartsHeight/1.5) + ")")
@@ -403,7 +378,7 @@ pC.update = function(gender,race, mouse){
     .attr('font-family', 'tahoma')
     .attr('font-size',12);
 
-    label = svg.select('.labels').selectAll('text')
+    label_gender = pieChart_gender.select('.labels').selectAll('text')
                 .data(pie(gender))  
                 .enter().append('text')
                 .attr('dy', '.35em')
@@ -411,62 +386,86 @@ pC.update = function(gender,race, mouse){
                     return d.data.key;
                 })
                 .attr('transform', function(d) {
-                    var pos = outerArc.centroid(d);
-                    pos[0] = radius * 0.95 * (midAngle(d) < Math.PI ? 1 : -1);
-                    return 'translate(' + pos + ')';
+                    var pos_gender = outerArc_gender.centroid(d);
+                    pos_gender[0] = radius * 0.95 * (midAngle(d) < Math.PI ? 1 : -1);
+                    return 'translate(' + pos_gender + ')';
                 })
                 .style('text-anchor', function(d) {
                     return (midAngle(d)) < Math.PI ? 'start' : 'end';
                 });
 
-    arcs_gender.append("text")
-              .attr("transform", function(d) {
-                return "translate(" + arc.centroid(d) + ")";
-              })
-              .attr("text-anchor","middle")
-              .attr('font-family', 'tahoma')
-              .attr('font-size',12)
-              .text(function(d) {
-                //console.log(d.data.key);
-                return d.data.key
-              })
+    // RACE BREAKDOWN
 
-    // arcs_race.append("path")
-    //     .attr("fill",function(d,i) {
-    //       return color_race(i);
-    //     })
-    //     .attr("d",arc);
+    pieChart_race = svg.append("g")
+    .attr("class", "pie")
+    .attr('width',pieChartsWidth)
+    .attr('height',pieChartsHeight)
+    .attr("transform", "translate(" + margin.left*5 + "," + barChartHeight*1.7 + ")");
     
-    // svg
-    //     .append("g")
-    //     .attr("class", "pie title")
-    //     .append("text")
-    //     .attr("transform", "translate(" + margin.left + "," + barChartHeight*1.37 + ")")
-    //     .text("Race Breakdown")
-    //     .attr('font-family', 'tahoma')
-    //     .attr('font-size',12);
+    pieChart_race.append('g')
+    .attr("class", "labels");
+    pieChart_race.append("g")
+    .attr("class", "lines"); 
+
+    pieChart_race.selectAll('path')
+    .data(pie(race))
+    .enter()
+    .append('path')
+    .attr('d', arc)
+    .attr("fill",function(d,i) {return color_race(i);})
+
+    pieChart_race.append('g').classed('labels',true);
+    pieChart_race.append('g').classed('lines',true);    
     
-    // NEED TO FIX OVERLAPPING LABELS
-    // arcs_race.append("text")
-    //     .attr("transform", function(d) {
-    //       return "translate(" + arc.centroid(d) + ")";
-    //     })
-    //     .attr('font-family', 'tahoma')
-    //     .attr('font-size',12)
-    //     .attr("text-anchor","middle")
-    //     .text(function(d) {
-    //       //console.log(d.data.key);
-    //       return d.data.key
-    //     })
+    var outerArc_race = d3.arc()
+        .outerRadius(radius * 1.2)
+        .innerRadius(radius * 1.2);
+
+    var polyline_race = pieChart_race.select('.lines')
+                      .selectAll('polyline')
+                      .data(pie(race))
+                      .enter().append('polyline')
+                      .attr('points', function(d) {
+
+            var pos_race = outerArc_race.centroid(d);
+            pos_race[0] = radius * 1.3 * (midAngle(d) < Math.PI ? 1 : -1);
+            return [arc.centroid(d), outerArc_race.centroid(d), pos_race]
+        });
+    
+        pieChart_race.append("g")
+    .attr("class", "pie title")
+    .append("text")
+    .attr("transform", "translate(" + -(pieChartsWidth/1.8) + "," + (-pieChartsHeight/1.5) + ")")
+    .text("Race Breakdown")
+    .attr('font-family', 'tahoma')
+    .attr('font-size',12);
+
+    pieChart_race = pieChart_race.select('.labels').selectAll('text')
+                .data(pie(race))  
+                .enter().append('text')
+                .attr('dy', '.35em')
+                .html(function(d) {
+                    return d.data.key;
+                })
+                .attr('transform', function(d) {
+                    var pos = outerArc_race.centroid(d);
+                    pos[0] = radius * 1.3 * (midAngle(d) < Math.PI ? 1 : -1);
+                    return 'translate(' + pos + ')';
+                })
+                .style('text-anchor', function(d) {
+                    return (midAngle(d)) < Math.PI ? 'start' : 'end';
+                })
+                .attr('font-size',10);
+
 
   }
 
   else if (mouse === "off") {
-    // d3.selectAll(".pie")
-    //   .transition()
-    //   .duration(1)
-    //   .attr('opacity',0)
-    //   .remove();
+    d3.selectAll(".pie")
+      .transition()
+      .duration(1)
+      .attr('opacity',0)
+      .remove();
   }
 };
 
