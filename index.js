@@ -300,68 +300,124 @@ var pC = {};
 
 pC.update = function(gender,race, mouse){
 
+  if (mouse === "on") {
+
+  // referenced https://bl.ocks.org/laxmikanta415/dc33fe11344bf5568918ba690743e06f  
   var w = 170;
   var h = 170;
 
   var outerRadius = w/2;
   var innerRadius = w/4;
-  var arc = d3.arc()
-  .innerRadius(innerRadius)
-  .outerRadius(outerRadius);
   
+  var arc = d3.arc().innerRadius(innerRadius).outerRadius(outerRadius);
   var pie = d3.pie().value(function(d) { return d.value ;} );
 
   // Set up groups
-  gender_chart_x = pieChartsWidth * 4 + margin.left;
+  gender_chart_x = pieChartsWidth * 5 + margin.left;
 
-  var arcs_gender = svg
-    .append("g")
+  pieChart = svg.append("g")
     .attr("class", "pie")
     .attr('width',pieChartsWidth)
     .attr('height',pieChartsHeight)
-    .attr("transform", "translate(" + gender_chart_x + "," + barChartHeight*1.4 + ")")
-    .selectAll("g.arc")
+    .attr("transform", "translate(" + gender_chart_x + "," + barChartHeight*1.7 + ")");
+    
+    pieChart
+    .append("g")
+    .attr("class", "slices");
+    pieChart.append('g')
+    .attr("class", "labels");
+    pieChart.append("g")
+    .attr("class", "lines"); 
+
+    pieChart.selectAll('path')
     .data(pie(gender))
     .enter()
-    .append("g")
-    .attr("class","arc")
-    .attr("transform", "translate(" + +outerRadius + "," + +outerRadius + ")");
+    .append('path')
+    .attr('d', arc)
+    .attr("fill",function(d,i) {return color_gender(i);})
+
+    pieChart.append('g').classed('labels',true);
+    pieChart.append('g').classed('lines',true);    
+
+
+    // .selectAll("g.arc")
+    // .data(pie(gender))
+    // .enter()
+    // .append("g")
+    // .attr("class","arc")
+    // .attr("transform", "translate(" + +outerRadius + "," + +outerRadius + ")");
 
   
-  var arcs_race = svg
-    .append("g")
-    .attr("class", "pie")
-    .attr('width',pieChartsWidth)
-    .attr('height',pieChartsHeight)
-    .attr("transform", "translate(" + margin.left + "," + barChartHeight*1.4 + ")")
-    .selectAll("g.arc")
-    .data(pie(race))
-    .enter()
-    .append("g")
-    .attr("class","arc")
-    .attr("transform", "translate(" + +outerRadius + "," + +outerRadius + ")");
+  // var arcs_race = svg
+  //   .append("g")
+  //   .attr("class", "pie")
+  //   .attr('width',pieChartsWidth)
+  //   .attr('height',pieChartsHeight)
+  //   .attr("transform", "translate(" + margin.left + "," + barChartHeight*1.4 + ")")
+  //   .selectAll("g.arc")
+  //   .data(pie(race))
+  //   .enter()
+  //   .append("g")
+  //   .attr("class","arc")
+  //   .attr("transform", "translate(" + +outerRadius + "," + +outerRadius + ")");
 
-  if (mouse === "on") {
+    //console.log(arcs_race);
+
     
 
     // Draw arcs paths
 
     // fix labels to look like this and add values: http://bl.ocks.org/dbuezas/9306799
-    arcs_gender.append("path")
-        .attr("fill",function(d,i) {
-          return color_gender(i);
-        })
-        .attr("d",arc)
-        ;
+    // arcs_gender.append("path")
+    //     .attr("fill",function(d,i) {
+    //       return color_gender(i);
+    //     })
+    //     .attr("d",arc);
     
-    svg
-    .append("g")
+    
+
+    function midAngle(d) { return d.startAngle + (d.endAngle - d.startAngle) / 2; } 
+    
+    var radius = Math.min(w, h)/2;
+    var outerArc = d3.arc()
+        .outerRadius(radius * 1.1)
+        .innerRadius(radius * 1.1);
+
+    
+    var polyline = pieChart.select('.lines')
+                      .selectAll('polyline')
+                      .data(pie(gender))
+                      .enter().append('polyline')
+                      .attr('points', function(d) {
+
+            var pos = outerArc.centroid(d);
+            pos[0] = radius * 0.95 * (midAngle(d) < Math.PI ? 1 : -1);
+            return [arc.centroid(d), outerArc.centroid(d), pos]
+        });
+    
+    pieChart.append("g")
     .attr("class", "pie title")
     .append("text")
-    .attr("transform", "translate(" + gender_chart_x+ "," + barChartHeight*1.37 + ")")
+    .attr("transform", "translate(" + -(pieChartsWidth/1.8) + "," + (-pieChartsHeight/1.5) + ")")
     .text("Gender Breakdown")
     .attr('font-family', 'tahoma')
-        .attr('font-size',12);
+    .attr('font-size',12);
+
+    label = svg.select('.labels').selectAll('text')
+                .data(pie(gender))  
+                .enter().append('text')
+                .attr('dy', '.35em')
+                .html(function(d) {
+                    return d.data.key;
+                })
+                .attr('transform', function(d) {
+                    var pos = outerArc.centroid(d);
+                    pos[0] = radius * 0.95 * (midAngle(d) < Math.PI ? 1 : -1);
+                    return 'translate(' + pos + ')';
+                })
+                .style('text-anchor', function(d) {
+                    return (midAngle(d)) < Math.PI ? 'start' : 'end';
+                });
 
     arcs_gender.append("text")
               .attr("transform", function(d) {
@@ -375,42 +431,42 @@ pC.update = function(gender,race, mouse){
                 return d.data.key
               })
 
-    arcs_race.append("path")
-        .attr("fill",function(d,i) {
-          return color_race(i);
-        })
-        .attr("d",arc);
+    // arcs_race.append("path")
+    //     .attr("fill",function(d,i) {
+    //       return color_race(i);
+    //     })
+    //     .attr("d",arc);
     
-    svg
-        .append("g")
-        .attr("class", "pie title")
-        .append("text")
-        .attr("transform", "translate(" + margin.left + "," + barChartHeight*1.37 + ")")
-        .text("Race Breakdown")
-        .attr('font-family', 'tahoma')
-        .attr('font-size',12);
+    // svg
+    //     .append("g")
+    //     .attr("class", "pie title")
+    //     .append("text")
+    //     .attr("transform", "translate(" + margin.left + "," + barChartHeight*1.37 + ")")
+    //     .text("Race Breakdown")
+    //     .attr('font-family', 'tahoma')
+    //     .attr('font-size',12);
     
     // NEED TO FIX OVERLAPPING LABELS
-    arcs_race.append("text")
-        .attr("transform", function(d) {
-          return "translate(" + arc.centroid(d) + ")";
-        })
-        .attr('font-family', 'tahoma')
-        .attr('font-size',12)
-        .attr("text-anchor","middle")
-        .text(function(d) {
-          //console.log(d.data.key);
-          return d.data.key
-        })
+    // arcs_race.append("text")
+    //     .attr("transform", function(d) {
+    //       return "translate(" + arc.centroid(d) + ")";
+    //     })
+    //     .attr('font-family', 'tahoma')
+    //     .attr('font-size',12)
+    //     .attr("text-anchor","middle")
+    //     .text(function(d) {
+    //       //console.log(d.data.key);
+    //       return d.data.key
+    //     })
 
   }
 
   else if (mouse === "off") {
-    d3.selectAll(".pie")
-      .transition()
-      .duration(1)
-      .attr('opacity',0)
-      .remove();
+    // d3.selectAll(".pie")
+    //   .transition()
+    //   .duration(1)
+    //   .attr('opacity',0)
+    //   .remove();
   }
 };
 
