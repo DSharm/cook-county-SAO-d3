@@ -13,9 +13,9 @@
 
 // Set up margins, width, and chart sizes
 var margin = {top: 40,right: 40,bottom: 25,left: 40};
-var width = 1000;
+var width = 900;
 var height = 700;
-var barChartWidth = 0.9 * width - margin.right;
+var barChartWidth = width - margin.right;
 var barChartHeight = height  - margin.top*9;
 var pieChartsWidth = 0.1 * width;
 var pieChartsHeight = 0.5 * barChartHeight;
@@ -30,8 +30,11 @@ var pieChartsHeight = 0.5 * barChartHeight;
 //    .attr('font-size',18);
 
 // Set colors for pie charts   
-var barColor = d3.scaleOrdinal()
+var intakeColor = d3.scaleOrdinal()
   .range(["#107386", "#CF1264", "#681E70", "#ff8c00","#00ffc8"]);
+
+var dispositionColor = d3.scaleOrdinal()
+  .range(["#107386", "#CF1264"]);
 
 var color_race = d3.scaleOrdinal()
   .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
@@ -261,61 +264,101 @@ function makebarChart(dataset, config) {
     })
     .attr("fill", function(d) {
       parent = this.parentNode;
-      console.log(parent.className.animVal)
-      return barColor(parent.className.animVal)
+      //console.log(parent.className.animVal)
+      if (config["name"] === "Intake") {
+        return intakeColor(parent.className.animVal)
+      }
+      else if (config["name"] === "Disposition") {
+        return dispositionColor(parent.className.animVal)
+      }
+      
       //return color_gender(i)
     })
     .on("mouseover",mouseover)
     .on("mouseout",mouseout);// mouseout is defined below.
 
+    console.log(results);
     // Create a legend - need to make this dynamic to account for other charts (not Intake)
-    barChart.append("rect")
-        .attr('height',15)
-        .attr('width',15)
-        .attr("transform","translate(" + (barChartWidth+10) + "," + (40) +")")
-        .attr('fill','#107386');
     
-    barChart.append("rect")
-        .attr('height',15)
-        .attr('width',15)
-        .attr("transform","translate(" + (barChartWidth+10) + "," + (20) +")")
-        .attr('fill','#CF1264');
+    // https://bl.ocks.org/bricedev/0d95074b6d83a77dc3ad
+    legend = barChart.selectAll(".legend")
+        .data(results)
+        .enter().append("g")
+        .attr("class", "legend")
+        .attr("transform", function(d,i) { return "translate(0," + i*20 + ")"; })
+       .style("opacity","1");
     
-    barChart.append("rect")
-        .attr('height',15)
-        .attr('width',15)
-        .attr("transform","translate(" + (barChartWidth+10) + "," + (0) +")")
-        .attr('fill','#681E70');
+    legend.append("rect")
+      .attr("x", barChartWidth - 10)
+      .attr("width", 10)
+      .attr("height", 18)
+      .style("fill", function(d) { 
+        if (config["name"] === "Intake") {
+          return intakeColor(d)
+        }
+        else if (config["name"] === "Disposition") {
+          return dispositionColor(d);
+        }
+      });
     
-    barChart.append("rect")
-        .attr('height',15)
-        .attr('width',15)
-        .attr("transform","translate(" + (barChartWidth+10) + "," + (-20) +")")
-        .attr('fill','#ff8c00');
+    legend.append("text")
+      .attr("x", barChartWidth - 15)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .style("text-anchor", "end")
+      .attr("font-size",10)
+      .text(function(d) {return d; });
 
-    barChart.append("text")
-        .attr("transform","translate(" + (barChartWidth+40) + "," + (55) +")")
-        .text('Approved')
-        .attr('font-family', 'tahoma')
-        .attr('font-size',14); 
-    
-    barChart.append("text")
-        .attr("transform","translate(" + (barChartWidth+40) + "," + (35) +")")
-        .text('Rejected')
-        .attr('font-family', 'tahoma')
-        .attr('font-size',14); 
+      //.style("fill", function(d) { console.log(d); return barColor(d); });
 
-    barChart.append("text")
-        .attr("transform","translate(" + (barChartWidth+40) + "," + (15) +")")
-        .text('Filed by Law Enforcement (Narcotics)')
-        .attr('font-family', 'tahoma')
-        .attr('font-size',14); 
+     // legend.transition().duration(100).delay(function(d,i){ return 1300 + 100 * i; }).style("opacity","1");
+    // barChart.append("rect")
+    //     .attr('height',15)
+    //     .attr('width',15)
+    //     .attr("transform","translate(" + (barChartWidth+10) + "," + (40) +")")
+    //     .attr('fill','#107386');
     
-    barChart.append("text")
-        .attr("transform","translate(" + (barChartWidth+40) + "," + (-5) +")")
-        .text('Other')
-        .attr('font-family', 'tahoma')
-        .attr('font-size',14); 
+    // barChart.append("rect")
+    //     .attr('height',15)
+    //     .attr('width',15)
+    //     .attr("transform","translate(" + (barChartWidth+10) + "," + (20) +")")
+    //     .attr('fill','#CF1264');
+    
+    // barChart.append("rect")
+    //     .attr('height',15)
+    //     .attr('width',15)
+    //     .attr("transform","translate(" + (barChartWidth+10) + "," + (0) +")")
+    //     .attr('fill','#681E70');
+    
+    // barChart.append("rect")
+    //     .attr('height',15)
+    //     .attr('width',15)
+    //     .attr("transform","translate(" + (barChartWidth+10) + "," + (-20) +")")
+    //     .attr('fill','#ff8c00');
+
+    // barChart.append("text")
+    //     .attr("transform","translate(" + (barChartWidth+40) + "," + (55) +")")
+    //     .text('Approved')
+    //     .attr('font-family', 'tahoma')
+    //     .attr('font-size',14); 
+    
+    // barChart.append("text")
+    //     .attr("transform","translate(" + (barChartWidth+40) + "," + (35) +")")
+    //     .text('Rejected')
+    //     .attr('font-family', 'tahoma')
+    //     .attr('font-size',14); 
+
+    // barChart.append("text")
+    //     .attr("transform","translate(" + (barChartWidth+40) + "," + (15) +")")
+    //     .text('Filed by Law Enforcement (Narcotics)')
+    //     .attr('font-family', 'tahoma')
+    //     .attr('font-size',14); 
+    
+    // barChart.append("text")
+    //     .attr("transform","translate(" + (barChartWidth+40) + "," + (-5) +")")
+    //     .text('Other')
+    //     .attr('font-family', 'tahoma')
+    //     .attr('font-size',14); 
     
     barChart.append("text")
         .attr("transform","translate(" + 0 + "," + (barChartHeight+40) +")")
