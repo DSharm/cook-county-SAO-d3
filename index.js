@@ -21,14 +21,6 @@ var pieChartsWidth = 0.1 * width;
 var pieChartsHeight = 0.5 * barChartHeight;
 
 
-// // Add title
-// svg.append('text')
-//    .attr('x', margin.left)
-//    .attr('y', margin.top-20)
-//    .text("Cook County State Attorney's Office - Dashboard")
-//    .attr('font-family', 'tahoma')
-//    .attr('font-size',18);
-
 // Set colors for pie charts   
 var intakeColor = d3.scaleOrdinal()
   .range(["#107386", "#CF1264", "#681E70", "#ff8c00","#00ffc8"]);
@@ -47,27 +39,6 @@ Promise.all([
   d3.json("processed_data/intake_year_race_gender.json"),
   d3.json("processed_data/dispo_year_race_gender.json")
 ]).then(function(allData) {
-
-  // // //Event listener for button
-  // d3.selectAll(".button").on("click",function(d){
-  // dataset = this.id;
-  // console.log(dataset);
-  // update(dataset);
-  // });
-
-  // function update(data) {
-  //   if (data === "Intake") {
-  //     makeVis(allData,0);
-  //   }
-  //   else if (data === "Disposition") {
-  //     makeVis(allData,1);
-  //   }
-  // }
-  //makeVis(allData);
-  // update();
-  // makeVis(allData);
-  // this.intake = allData[0];
-  // this.disposition = allData[1];
 
   // https://github.com/UrbanInstitute/state-economic-monitor
   $.each(Configuration.BarCharts, function(x, config) {
@@ -181,17 +152,12 @@ function makebarChart(dataset, config) {
   
     x_categories.domain(results).rangeRound([0, x_years.bandwidth()]);
   
-  //var values = ['value 1', 'value 2', 'value 3']; 
-  //console.log(nested_total[0].values[0]);
   var values = "Total";
-  //console.log(values);
 
   x_values.domain(values).rangeRound([0, x_categories.bandwidth()]);
   
   y.domain([0, d3.max(dataset, function(d) {
-      //console.log(d.values);
       return d3.max(d.values, function(d) {
-          //console.log(d.Total); 
           return d.Total;                   
       })
     })]);
@@ -233,7 +199,6 @@ function makebarChart(dataset, config) {
 
   var categories_g = groups_g.selectAll(".category")
     .data(function(d) {
-      //console.log(d.key);
       return d.values;
     })
     .enter().append("g")
@@ -247,7 +212,6 @@ function makebarChart(dataset, config) {
 
   var rects = categories_g.selectAll('.rect')
     .data(function(d) {
-      //console.log(m);
       return [d];
     })
     .enter().append("rect")
@@ -264,7 +228,6 @@ function makebarChart(dataset, config) {
     })
     .attr("fill", function(d) {
       parent = this.parentNode;
-      //console.log(parent.className.animVal)
       if (config["name"] === "Intake") {
         return intakeColor(parent.className.animVal)
       }
@@ -272,7 +235,6 @@ function makebarChart(dataset, config) {
         return dispositionColor(parent.className.animVal)
       }
       
-      //return color_gender(i)
     })
     .on("mouseover",mouseover)
     .on("mouseout",mouseout);// mouseout is defined below.
@@ -308,57 +270,6 @@ function makebarChart(dataset, config) {
       .style("text-anchor", "end")
       .attr("font-size",10)
       .text(function(d) {return d; });
-
-      //.style("fill", function(d) { console.log(d); return barColor(d); });
-
-     // legend.transition().duration(100).delay(function(d,i){ return 1300 + 100 * i; }).style("opacity","1");
-    // barChart.append("rect")
-    //     .attr('height',15)
-    //     .attr('width',15)
-    //     .attr("transform","translate(" + (barChartWidth+10) + "," + (40) +")")
-    //     .attr('fill','#107386');
-    
-    // barChart.append("rect")
-    //     .attr('height',15)
-    //     .attr('width',15)
-    //     .attr("transform","translate(" + (barChartWidth+10) + "," + (20) +")")
-    //     .attr('fill','#CF1264');
-    
-    // barChart.append("rect")
-    //     .attr('height',15)
-    //     .attr('width',15)
-    //     .attr("transform","translate(" + (barChartWidth+10) + "," + (0) +")")
-    //     .attr('fill','#681E70');
-    
-    // barChart.append("rect")
-    //     .attr('height',15)
-    //     .attr('width',15)
-    //     .attr("transform","translate(" + (barChartWidth+10) + "," + (-20) +")")
-    //     .attr('fill','#ff8c00');
-
-    // barChart.append("text")
-    //     .attr("transform","translate(" + (barChartWidth+40) + "," + (55) +")")
-    //     .text('Approved')
-    //     .attr('font-family', 'tahoma')
-    //     .attr('font-size',14); 
-    
-    // barChart.append("text")
-    //     .attr("transform","translate(" + (barChartWidth+40) + "," + (35) +")")
-    //     .text('Rejected')
-    //     .attr('font-family', 'tahoma')
-    //     .attr('font-size',14); 
-
-    // barChart.append("text")
-    //     .attr("transform","translate(" + (barChartWidth+40) + "," + (15) +")")
-    //     .text('Filed by Law Enforcement (Narcotics)')
-    //     .attr('font-family', 'tahoma')
-    //     .attr('font-size',14); 
-    
-    // barChart.append("text")
-    //     .attr("transform","translate(" + (barChartWidth+40) + "," + (-5) +")")
-    //     .text('Other')
-    //     .attr('font-family', 'tahoma')
-    //     .attr('font-size',14); 
     
     barChart.append("text")
         .attr("transform","translate(" + 0 + "," + (barChartHeight+40) +")")
@@ -368,8 +279,6 @@ function makebarChart(dataset, config) {
 
     function mouseover(d){  // utility function to be called on mouseover.
           
-
-
           gender = d.Gender;
           race = d.Race;
                
@@ -546,6 +455,15 @@ function makebarChart(dataset, config) {
 
 
 /*
+next steps:
+- add sentences dataset
+- add offense category breakdown pie chart
+- add mouseover to bar charts showing values
+- allow clicking of bars so pie charts don't disappear
+- tree diagram
+- aesthetics
+- why are the pages so long?
+
 
 next steps 9/11/19:
 - add dispositions and sentencing charts 
