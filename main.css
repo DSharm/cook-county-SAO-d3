@@ -17,6 +17,7 @@ h2 {
   font-family: "tahoma"
 }
 
+/* adapted from https://github.com/UrbanInstitute/state-economic-monitor  */
 ul li{
   border: 3px solid rgb(160, 12, 12);
   display: inline-block;
@@ -52,25 +53,6 @@ polyline{
   stroke-width: 2px;
   fill: none;
 }
-
-/* Bars for intake chart */
-
-/* .category-Approved{
-  fill: #107386
-}
-
-.category-Rejected{
-  fill: #CF1264
-}
-
-.category-Filed.by.LEA{
-  fill: #681E70
-} 
-
-.category-Other{
-  fill: #00ffc8;
-  fill: #ff8c00
-}  */
 
 .axis .domain {
   display: none;
