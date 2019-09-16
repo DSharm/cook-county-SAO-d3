@@ -4,6 +4,29 @@ body {
   height: 100%;
 }
 
+.Heading {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  padding:25px;
+}
+
+h2 {
+  display: flex;
+  justify-content: center;
+  font-family: "tahoma"
+}
+
+ul li{
+  border: 3px solid rgb(160, 12, 12);
+  display: inline-block;
+  min-width: 200px;
+  text-align: center;  
+  display: inline-block;
+  padding:25px;
+  color:rgb(160, 12, 12);
+}
+
 .first,
 .second {
   width: 100%;

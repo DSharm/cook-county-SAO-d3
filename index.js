@@ -9,7 +9,7 @@
 // https://github.com/emmacooperpeterson/human_trafficking_sentencing/blob/master/script.js
 // https://next.plnkr.co/edit/qGZ1YuyFZnVtp04bqZki?p=preview&utm_source=legacy&utm_medium=worker&utm_campaign=next&preview
 // https://github.com/UrbanInstitute/state-economic-monitor (used to help the basic architecture of project)
-
+// https://www.w3schools.com/jquery/html_empty.asp
 
 // Set up margins, width, and chart sizes
 var margin = {top: 40,right: 40,bottom: 25,left: 40};
@@ -215,7 +215,7 @@ function makebarChart(dataset, config) {
   
   barChart.append("text")
             .attr("transform","translate(" + barChartWidth/2 + "," + (-10) +")")
-            .text("Intake - Outcome of Cases Entering SAO System")
+            .text(config["title"])
             .attr("text-anchor","middle")
             .attr('font-family', 'tahoma')
             .attr('font-size',14);
@@ -462,7 +462,8 @@ function makebarChart(dataset, config) {
                         })
                         .style('text-anchor', function(d) {
                             return (midAngle(d)) < Math.PI ? 'start' : 'end';
-                        });
+                        })
+                        .attr('font-size',10);
         
             // RACE BREAKDOWN
         
