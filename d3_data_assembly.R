@@ -294,6 +294,11 @@ dispo_year_status_race <- disposition %>%
 
 write_json(dispo_year_status_race,here("processed_data","dispo_year_status_race.json"))
 
+dispo_year_race_gender <- inner_join(dispo_year_status_gender,dispo_year_status_race,by=c("Year","conviction"))
+
+write_json(dispo_year_race_gender,here("processed_data","dispo_year_race_gender.json"))
+
+
 ############################################# PLOT 3 ############################################# 
 
 # Clean up sentencing data

@@ -32,7 +32,7 @@ polyline{
 
 /* Bars for intake chart */
 
-.category-Approved{
+/* .category-Approved{
   fill: #107386
 }
 
@@ -45,8 +45,8 @@ polyline{
 } 
 
 .category-Other{
-  fill: #ff8c00
-} 
+  fill: #00ffc8
+}  */
 
 .axis .domain {
   display: none;
