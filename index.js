@@ -242,8 +242,9 @@ function makebarChart(dataset, config) {
         return sentColor(parent.className.animVal)
       }
     })
-    .on("mouseover",mouseover)
-    .on("mouseout",mouseout);// mouseout is defined below.
+    .on("click",click)
+    .on("mouseover",mouseover);
+    //.on("click",mouseout);// mouseout is defined below.
 
     console.log(results);
     // Create a legend - need to make this dynamic to account for other charts (not Intake)
@@ -286,15 +287,25 @@ function makebarChart(dataset, config) {
         .attr('font-family', 'tahoma')
         .attr('font-size',12); 
 
-    function mouseover(d){  // utility function to be called on mouseover.
-          
+    function click(d){  // utility function to be called on mouseover.
+          d3.selectAll(".pie")
+          .transition()
+          .duration(1)
+          .attr('opacity',0)
+          .remove();  
+
           gender = d.Gender;
           race = d.Race;
                
           // call update functions of pie-chart and legend.    
           pC.update(gender,race,"on");
         }
-        
+      
+    function mouseover(d) {
+        console.log(d.Total);
+
+
+    }
         function mouseout(d){
           pC.update(gender,race,"off");
         
