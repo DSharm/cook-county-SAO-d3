@@ -190,6 +190,10 @@ write_json(intake_year_race_gender,here("processed_data","intake_year_race_gende
 #   spread(conviction_d,cases)
 
 # Clean up dispositions data
+# As per the 2017 Data report, Dispositions should be filtered only on the primary charge (one per case participant ID)
+# because each case participant can have many charges against them but summarizing all of those would be 
+# too complicated. the primary charge reflects the most serious charge
+
 disposition %<>%
   filter(PRIMARY_CHARGE == "true") %>%
   filter(GENDER %in% c("Male","Female")) %>%
@@ -257,7 +261,7 @@ disposition %<>%
 # Cases convicted/not convicted - Default 
 dispo_year_status <- disposition %>% 
   group_by(dispo_year,conviction) %>% 
-  summarise(cases = n()) %>% 
+  summarise(cases = n_distinct(CASE_PARTICIPANT_ID)) %>% 
   filter(dispo_year > 2010 & dispo_year < 2020) %>% 
   spread(conviction, cases) %>% 
   rename(Year=dispo_year)
@@ -290,7 +294,7 @@ dispo_year_status_race <- disposition %>%
   summarise(cases = n()) %>% 
   filter(dispo_year > 2010 & dispo_year < 2020) %>% 
   spread(Race_short, cases) %>% 
-  rename(Year=dispo_year)
+  rename(Year=dispo_year) 
 
 write_json(dispo_year_status_race,here("processed_data","dispo_year_status_race.json"))
 
@@ -302,9 +306,13 @@ write_json(dispo_year_race_gender,here("processed_data","dispo_year_race_gender.
 ############################################# PLOT 3 ############################################# 
 
 # Clean up sentencing data
+# As per the CC SAO Data report, Sentences should NOT be filtered only on the primary charge (one per case participant ID)
+# For many case participants, the primary charge may not receive a conviction (e.g. might be nolle'd) but
+# that doesnt mean that case participant won't receive a sentence because some of the lower charges
+# may receive a conviction and then therefore a sentence. So to summarize this data, we use n_distinct(Case participant ID)
 
 sentence %<>%
-  filter(PRIMARY_CHARGE == "true") %>%
+  #filter(PRIMARY_CHARGE == "true") %>%
   filter(GENDER %in% c("Male","Female")) %>%
   filter(RACE %in% c("Albino", "American Indian", "Asian", "ASIAN", "Biracial", "Black", "CAUCASIAN", "HISPANIC",
                      "Unknown", "White", "White [Hispanic or Latino]", "White/Black [Hispanic or Latino]")) %>%
@@ -340,7 +348,7 @@ sentence %<>%
 # Sentence Types - Default 
 sent_year_status <- sentence %>% 
   group_by(sentence_year,sentence_type_short) %>% 
-  summarise(cases = n()) %>% 
+  summarise(cases = n_distinct(CASE_PARTICIPANT_ID)) %>% 
   filter(sentence_year > 2010 & sentence_year < 2020) %>% 
   spread(sentence_type_short, cases) %>% 
   rename(Year=sentence_year)
@@ -351,7 +359,7 @@ write_json(sent_year_status,here("processed_data","sent_year_status.json"))
 # Sentence Types - Gender  
 sent_year_status_gender <- sentence %>% 
   group_by(sentence_year,sentence_type_short,GENDER) %>% 
-  summarise(cases = n()) %>% 
+  summarise(cases = n_distinct(CASE_PARTICIPANT_ID)) %>% 
   filter(sentence_year > 2010 & sentence_year < 2020) %>% 
   spread(GENDER, cases) %>% 
   rename(Year=sentence_year)
@@ -362,9 +370,14 @@ write_json(sent_year_status_gender,here("processed_data","sent_year_status_gende
 # Sentence Types - Race  
 sent_year_status_race <- sentence %>% 
   group_by(sentence_year,sentence_type_short,Race_short) %>% 
-  summarise(cases = n()) %>% 
+  summarise(cases = n_distinct(CASE_PARTICIPANT_ID)) %>% 
   filter(sentence_year > 2010 & sentence_year < 2020) %>% 
   spread(Race_short, cases) %>% 
   rename(Year=sentence_year)
 
 write_json(sent_year_status_race,here("processed_data","sent_year_status_race.json"))
+
+sent_year_race_gender <- inner_join(sent_year_status_gender,sent_year_status_race,by=c("Year","sentence_type_short"))
+
+write_json(sent_year_race_gender,here("processed_data","sent_year_race_gender.json"))
+

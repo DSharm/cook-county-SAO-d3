@@ -13,6 +13,13 @@ var Configuration = {
             "group":"conviction",
             "padding":0.5,
             "title": "Disposition of Charges Approved In SAO System"
+        },
+        "Sentence": {
+            "name":"Sentence",
+            "order":2,
+            "group":"sentence_type_short",
+            "padding":0.25,
+            "title": "Disposition of Charges Approved In SAO System"
         }
     }
 }

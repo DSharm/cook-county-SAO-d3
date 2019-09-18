@@ -28,6 +28,9 @@ var intakeColor = d3.scaleOrdinal()
 var dispositionColor = d3.scaleOrdinal()
   .range(["#107386", "#CF1264"]);
 
+var sentColor = d3.scaleOrdinal()
+  .range(["#107386", "#CF1264", "#681E70", "#ff8c00"]);
+
 var color_race = d3.scaleOrdinal()
   .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
@@ -37,7 +40,8 @@ var color_gender = d3.scaleOrdinal()
 // Load data
 Promise.all([
   d3.json("processed_data/intake_year_race_gender.json"),
-  d3.json("processed_data/dispo_year_race_gender.json")
+  d3.json("processed_data/dispo_year_race_gender.json"),
+  d3.json("processed_data/sent_year_race_gender.json")
 ]).then(function(allData) {
 
   // https://github.com/UrbanInstitute/state-economic-monitor
@@ -234,7 +238,9 @@ function makebarChart(dataset, config) {
       else if (config["name"] === "Disposition") {
         return dispositionColor(parent.className.animVal)
       }
-      
+      else if (config["name"] === "Sentence") {
+        return sentColor(parent.className.animVal)
+      }
     })
     .on("mouseover",mouseover)
     .on("mouseout",mouseout);// mouseout is defined below.
@@ -260,6 +266,9 @@ function makebarChart(dataset, config) {
         }
         else if (config["name"] === "Disposition") {
           return dispositionColor(d);
+        }
+        else if (config["name"] === "Sentence") {
+          return sentColor(d);
         }
       });
     
@@ -456,7 +465,7 @@ function makebarChart(dataset, config) {
 
 /*
 next steps:
-- add sentences dataset
+- add sentences dataset - done
 - add offense category breakdown pie chart
 - add mouseover to bar charts showing values
 - allow clicking of bars so pie charts don't disappear
