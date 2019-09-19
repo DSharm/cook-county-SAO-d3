@@ -6,14 +6,14 @@ var barChartHeight = height  - margin.top*9;
 var pieChartsWidth = 0.1 * width;
 var pieChartsHeight = 0.5 * barChartHeight;
 
-
+// https://observablehq.com/@mbostock/flow-o-matic
 d3.json("processed_data/sent_intake_dispo_join_final.json")
 .then(function(data) {
     var sankey = d3.sankey().nodeWidth(36)
         .nodePadding(40)
         .size([barChartWidth, barChartHeight]);
 
-    const svg = d3.select("#Intake")
+    const svg = d3.select("#Sankey")
     .append('svg')
       .style("background", "#fff")
       .style("width", width)
