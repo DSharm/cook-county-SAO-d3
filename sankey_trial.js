@@ -1,6 +1,37 @@
+var dataTime = d3.range(0, 10).map(function(d) {
+    return new Date(2011 + d, 10, 3);
+  });
+  
+  var sliderTime = d3
+    .sliderBottom()
+    .min(d3.min(dataTime))
+    .max(d3.max(dataTime))
+    .step(1000 * 60 * 60 * 24 * 365)
+    .width(300)
+    .tickFormat(d3.timeFormat('%Y'))
+    .tickValues(dataTime)
+    .default(new Date(1998, 10, 3))
+    .on('onchange', val => {
+      //d3.select('p#value-time').text(d3.timeFormat('%Y')(val));
+    });
+  
+  var gTime = d3
+    .select('div#slider-time')
+    .append('svg')
+    .attr('width', 500)
+    .attr('height', 100)
+    .append('g')
+    .attr('transform', 'translate(30,30)');
+  
+  gTime.call(sliderTime);
+  
+//  d3.select('p#value-time').text(d3.timeFormat('%Y')(sliderTime.value()));
+
+
+
 var margin = {top: 40,right: 40,bottom: 25,left: 40};
 var width = 900;
-var height = 700;
+var height = 500;
 var barChartWidth = width - margin.right;
 var barChartHeight = height  - margin.top*9;
 var pieChartsWidth = 0.1 * width;
@@ -11,7 +42,7 @@ d3.json("processed_data/sent_intake_dispo_join_final.json")
 .then(function(data) {
     var sankey = d3.sankey().nodeWidth(36)
         .nodePadding(40)
-        .size([barChartWidth, barChartHeight]);
+        .size([barChartWidth, height]);
 
     const svg = d3.select("#Sankey")
     .append('svg')
@@ -50,6 +81,12 @@ d3.json("processed_data/sent_intake_dispo_join_final.json")
       graph.links.forEach(function (d, i) {
         graph.links[i].source = graph.nodes.indexOf(graph.links[i].source);
         graph.links[i].target = graph.nodes.indexOf(graph.links[i].target);
+        // if (graph.links[i].value < 100) {
+        //     console.log(graph.links[i].value);
+        //     console.log(graph.links[i].color);
+
+        //     //graph.links[i].color = "#ffffff";
+        // } 
       });
 
       console.log(graph);
@@ -94,7 +131,16 @@ d3.json("processed_data/sent_intake_dispo_join_final.json")
         .selectAll("g")
         .data(links)
         .join("g")
-        .attr("stroke", d => d3.color(d.color) || color)
+        .attr("stroke", function(d) {
+            if (d.value < 100) {
+                return d3.color("white");
+            }
+            else {
+                return d3.color(d.color);
+            }
+        })
+
+//        .attr("stroke", d => d3.color(d.color) || color)
         .style("mix-blend-mode", "multiply");
 
     link.append("path")

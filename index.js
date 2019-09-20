@@ -12,6 +12,10 @@
 // https://www.w3schools.com/jquery/html_empty.asp
 
 // https://www.d3-graph-gallery.com/graph/sankey_basic.html
+// https://grokbase.com/t/gg/d3-js/156byjtyfv/how-to-change-opacity-of-links-when-clicked-on-a-node-in-sankey-diagram-using-d3-library
+// https://bl.ocks.org/johnwalley/e1d256b81e51da68f7feb632a53c3518
+
+
 
 // Set up margins, width, and chart sizes
 var margin = {top: 40,right: 40,bottom: 25,left: 40};
@@ -481,7 +485,7 @@ next steps:
 - bar charts - add highlighting on bars on click/mouseover. show values on mouseover
 - pie charts - show default values or at least on mouseover
 - why are pages so long??
-- sankey - add drag, color nodes, highlighting of links, and year slider
+- sankey - add drag, color nodes, highlighting of links, and year slider. add particles
 
 
 next steps:
