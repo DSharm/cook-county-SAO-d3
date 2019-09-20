@@ -1,47 +1,32 @@
-var dataTime = d3.range(0, 10).map(function(d) {
-    return new Date(2011 + d, 10, 3);
-  });
-  
-  var sliderTime = d3
-    .sliderBottom()
-    .min(d3.min(dataTime))
-    .max(d3.max(dataTime))
-    .step(1000 * 60 * 60 * 24 * 365)
-    .width(300)
-    .tickFormat(d3.timeFormat('%Y'))
-    .tickValues(dataTime)
-    .default(new Date(1998, 10, 3))
-    .on('onchange', val => {
-      //d3.select('p#value-time').text(d3.timeFormat('%Y')(val));
-    });
-  
-  var gTime = d3
-    .select('div#slider-time')
-    .append('svg')
-    .attr('width', 500)
-    .attr('height', 100)
-    .append('g')
-    .attr('transform', 'translate(30,30)');
-  
-  gTime.call(sliderTime);
-  
-//  d3.select('p#value-time').text(d3.timeFormat('%Y')(sliderTime.value()));
-
-
-
 var margin = {top: 40,right: 40,bottom: 25,left: 40};
 var width = 900;
-var height = 500;
+var height = 400;
 var barChartWidth = width - margin.right;
 var barChartHeight = height  - margin.top*9;
 var pieChartsWidth = 0.1 * width;
 var pieChartsHeight = 0.5 * barChartHeight;
 
 // https://observablehq.com/@mbostock/flow-o-matic
+var flow = [];
+var starting_year = "2019";
+
 d3.json("processed_data/sent_intake_dispo_join_final.json")
 .then(function(data) {
-    var sankey = d3.sankey().nodeWidth(36)
-        .nodePadding(40)
+    dataset = data;
+    make_sankey(dataset,starting_year);    
+});
+
+function make_sankey(data, year) {
+    data_nested = d3.nest()
+            .key(function(d) {
+                return d.receive_year;
+            })
+            .entries(data)
+    console.log(data_nested);
+
+
+    var sankey = d3.sankey().nodeWidth(20)
+        .nodePadding(50)
         .size([barChartWidth, height]);
 
     const svg = d3.select("#Sankey")
@@ -53,15 +38,22 @@ d3.json("processed_data/sent_intake_dispo_join_final.json")
       graph = {"nodes" : [], "links" : []};
 
     //console.log(graph);
-    data.forEach(function (d) {
-        graph.nodes.push({ "name": d.source });
-        graph.nodes.push({ "name": d.target });
-        graph.links.push({ "source": d.source,
-                          "target": d.target,
-                          "value": +d.value,
-                            "color": "#dddddd"  });
+   // console.log(data_nested["2019"]);
+    data_nested.forEach(function (d) {
+        if (d.key === year) {
+            d.values.forEach(function (d) {
+                //console.log(d);
+                graph.nodes.push({ "name": d.source });
+                graph.nodes.push({ "name": d.target });
+                graph.links.push({ "source": d.source,
+                                    "target": d.target,
+                                    "value": +d.value,
+                                    "color": "#dddddd"  });
+            })
+        }
+        
       });
-      console.log(graph);
+      //console.log(graph);
 
       // return only the distinct / unique nodes
       // console.log(graph.nodes);
@@ -74,7 +66,7 @@ d3.json("processed_data/sent_intake_dispo_join_final.json")
       //   }));
       // //   .map(graph.nodes));
 
-      console.log(graph);
+      //console.log(graph);
       
 
       // loop through each link replacing the text with its index from node
@@ -89,7 +81,7 @@ d3.json("processed_data/sent_intake_dispo_join_final.json")
         // } 
       });
 
-      console.log(graph);
+      //console.log(graph);
 
       //now loop through each nodes to make nodes an array of objects
       // rather than an array of strings
@@ -102,7 +94,7 @@ d3.json("processed_data/sent_intake_dispo_join_final.json")
             nodes: graph.nodes.map(d => Object.assign({}, d)),
             links: graph.links.map(d => Object.assign({}, d))
         });
-        console.log(nodes);
+        //console.log(nodes);
     svg.append("g")
         .selectAll("rect")
         .data(nodes)
@@ -165,4 +157,47 @@ d3.json("processed_data/sent_intake_dispo_join_final.json")
         .text(d => ` ${d.value.toLocaleString()}`);
 
     return svg.node();
-});
+}
+// Time Slider
+
+var dataTime = d3.range(0, 10).map(function(d) {
+    return new Date(2011 + d, 10, 3);
+  });
+  
+  var sliderTime = d3
+    .sliderBottom()
+    .min(d3.min(dataTime))
+    .max(d3.max(dataTime))
+    .step(1000 * 60 * 60 * 24 * 365)
+    .width(300)
+    .tickFormat(d3.timeFormat('%Y'))
+    .tickValues(dataTime)
+    .default(new Date(1998, 10, 3))
+    .on('onchange', function(val) {
+        //console.log(d3.timeFormat('%Y')(val));
+        year = d3.timeFormat('%Y')(val);
+        $("#Sankey").empty();
+        //console.log(year);
+        make_sankey(dataset, year);
+    
+        // val => {
+        // d3.select('p#value-time').text(d3.timeFormat('%Y')(val));
+        // console.log(value);
+    });
+  
+  var gTime = d3
+    .select('div#slider-time')
+    .append('svg')
+    .attr('width', 500)
+    .attr('height', 100)
+    .append('g')
+    .attr('transform', 'translate(30,30)');
+  
+  gTime.call(sliderTime);
+
+//   d3.select("div#slider-time").on("onchange", function(d) {
+//     console.log(d);
+//     selectValue = this.value;
+//     console.log(selectValue);
+// })
+// d3.select('p#value-time').text(d3.timeFormat('%Y')(sliderTime.value()));

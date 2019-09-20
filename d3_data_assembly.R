@@ -524,17 +524,18 @@ disposition_max_conviction <- disposition %>%
 # result in a conviction, because then it follows that that case_participant would receive a sentence
 intake_dispo_join2 <- full_join(intake_for_join, disposition_max_conviction,by="CASE_PARTICIPANT_ID") %>% 
   filter(!is.na(receive_year)) %>% 
-  mutate(case = "Cases") %>% 
+  mutate(case_participant = "Case Participants") %>% 
   mutate(conviction2 = case_when(
     is.na(conviction) & initiation_result %in% c("Approved","Continued Investigation", "Filed by LEA") ~ "Pending",
     TRUE ~ conviction
   )) %>% 
   filter(!is.na(conviction2)) %>% 
-  group_by(receive_year,case,initiation_result,conviction2) %>% 
+  group_by(receive_year,case_participant,initiation_result,conviction2) %>% 
   summarise(cases = n()) %>% 
-  filter(receive_year==2017)  %>% 
-  ungroup() %>% 
-  select(initiation_result,conviction2,cases) %>% 
+  #filter(receive_year==2017)  %>% 
+  ungroup() %>%
+  group_by(receive_year,initiation_result,conviction2) %>% 
+  select(receive_year,initiation_result,conviction2,cases) %>% 
   rename(source=initiation_result,target=conviction2,value=cases)
 # The source here is initiation results that flow into conviction, and the target is convictions
 
@@ -542,13 +543,14 @@ intake_dispo_join2 <- full_join(intake_for_join, disposition_max_conviction,by="
 # So the source here will be "all cases" and the target will be initiation results
 intake_dispo_join_NA <- intake_for_join %>% 
   filter(!is.na(receive_year)) %>% 
-  mutate(case = "Cases") %>% 
-  group_by(receive_year,case,initiation_result) %>% 
+  mutate(case_participant = "Case Participants") %>% 
+  group_by(receive_year,case_participant,initiation_result) %>% 
   summarise(cases = n()) %>% 
-  filter(receive_year==2017) %>% 
-  ungroup() %>% 
-  select(case,initiation_result,cases) %>% 
-  rename(source=case,target=initiation_result,value=cases)
+  #filter(receive_year==2017) %>% 
+  # ungroup() %>% 
+  select(receive_year,case_participant,initiation_result,cases) %>% 
+  rename(source=case_participant,target=initiation_result,value=cases)
+
 # now, intake and disposition are ready and just need to be appended to each other
 
 # Next, need to do something similar with dispositions and sentences data
@@ -571,7 +573,7 @@ sent_intake_dispo_join <- full_join(intake_dispo_join, sent_for_join,by="CASE_PA
 # receive a conviction and isn't in the sentencing dataset, we'll assume that case ended there (as it should)
 sent_intake_dispo_join %<>%
   filter(!is.na(receive_year)) %>% 
-    mutate(case = "Cases") %>% 
+    mutate(case_participant = "Case Participants") %>% 
     mutate(conviction2 = case_when(
       is.na(conviction) & initiation_result %in% c("Approved","Continued Investigation", "Filed by LEA") ~ "Pending",
       TRUE ~ conviction
@@ -584,14 +586,13 @@ sent_intake_dispo_join %<>%
   filter(!is.na(sentence2)) %>%
     group_by(receive_year,conviction2,sentence2) %>% 
     summarise(cases = n()) %>% 
-    filter(receive_year==2017)  %>% 
-    ungroup() %>% 
-    select(conviction2,sentence2,cases) %>% 
+    #filter(receive_year==2017)  %>% 
+    # ungroup() %>% 
+    select(receive_year,conviction2,sentence2,cases) %>% 
     rename(source=conviction2,target=sentence2,value=cases)
 
-
-
 sent_intake_dispo_join_final <- rbind(intake_dispo_join2,intake_dispo_join_NA,sent_intake_dispo_join) 
+
 # sent_intake_dispo_join_final %<>% 
 #   filter(value > 90)
 
