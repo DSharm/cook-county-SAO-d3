@@ -266,12 +266,20 @@ disposition %<>%
   )) 
 
 # Cases convicted/not convicted - Default 
-dispo_year_status <- disposition %>% 
+dispo_year_status2 <- disposition %>% 
   group_by(dispo_year,conviction) %>% 
   summarise(cases = n_distinct(CASE_PARTICIPANT_ID)) %>% 
   filter(dispo_year > 2010 & dispo_year < 2020) %>% 
   spread(conviction, cases) %>% 
   rename(Year=dispo_year)
+
+dispo_year_status_max <- disposition_max_conviction %>% 
+  group_by(dispo_year,conviction) %>% 
+  summarise(cases = n_distinct(CASE_PARTICIPANT_ID)) %>% 
+  filter(dispo_year > 2010 & dispo_year < 2020) %>% 
+  spread(conviction, cases) %>% 
+  rename(Year=dispo_year)
+
 
 write_json(dispo_year_status,here("processed_data","dispo_year_status.json"))
 

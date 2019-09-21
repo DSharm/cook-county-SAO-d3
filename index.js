@@ -14,7 +14,7 @@
 // https://www.d3-graph-gallery.com/graph/sankey_basic.html
 // https://grokbase.com/t/gg/d3-js/156byjtyfv/how-to-change-opacity-of-links-when-clicked-on-a-node-in-sankey-diagram-using-d3-library
 // https://bl.ocks.org/johnwalley/e1d256b81e51da68f7feb632a53c3518
-
+// http://bl.ocks.org/d3noob/a22c42db65eb00d4e369
 
 
 // Set up margins, width, and chart sizes
@@ -117,6 +117,11 @@ function makebarChart(dataset, config) {
   figureID = config["name"];
   var parentElement = d3.select("#" + figureID );
   $("#" + figureID).empty();
+
+  // Define the div for the tooltip
+  var div = parentElement.append("div")	
+  .attr("class", "tooltip")				
+  .style("opacity", 0);
 
   var svg = parentElement
             .append("svg")
@@ -248,8 +253,8 @@ function makebarChart(dataset, config) {
       }
     })
     .on("click",click)
-    .on("mouseover",mouseover);
-    //.on("click",mouseout);// mouseout is defined below.
+    .on("mouseover",mouseover)
+    .on("mouseout",mouseout);// mouseout is defined below.
 
     console.log(results);
     // Create a legend - need to make this dynamic to account for other charts (not Intake)
@@ -307,12 +312,20 @@ function makebarChart(dataset, config) {
         }
       
     function mouseover(d) {
-        console.log(d.Total);
-
-
-    }
-        function mouseout(d){
-          pC.update(gender,race,"off");
+      //console.log(d.key);
+      div.transition()		
+      .duration(200)		
+      .style("opacity", .9);		
+      div	.html(d.key + ":" + "<br/>" + d.Total + " Cases")	
+      .style("left", (d3.event.pageX) + "px")		
+      .style("top", (d3.event.pageY - 35) + "px");						
+      //  console.log(d.Total);
+    };
+      
+    function mouseout(d){
+            div.transition()		
+                .duration(100)		
+                .style("opacity", 0);	
         
         }
         

@@ -1,13 +1,12 @@
 var margin = {top: 40,right: 40,bottom: 25,left: 40};
 var width = 900;
-var height = 400;
+var height = 450;
 var barChartWidth = width - margin.right;
 var barChartHeight = height  - margin.top*9;
 var pieChartsWidth = 0.1 * width;
 var pieChartsHeight = 0.5 * barChartHeight;
 
 // https://observablehq.com/@mbostock/flow-o-matic
-var flow = [];
 var starting_year = "2019";
 
 d3.json("processed_data/sent_intake_dispo_join_final.json")
@@ -24,12 +23,13 @@ function make_sankey(data, year) {
             .entries(data)
     console.log(data_nested);
 
-
     var sankey = d3.sankey().nodeWidth(20)
         .nodePadding(50)
         .size([barChartWidth, height]);
 
-    const svg = d3.select("#Sankey")
+    const svg = d3.select(".sankey")
+    .append('div')
+    .attr('id',"Sankey")
     .append('svg')
       .style("background", "#fff")
       .style("width", width)
@@ -118,7 +118,8 @@ function make_sankey(data, year) {
         .append("title")
         .text(d => `${d.name}\n${d.value.toLocaleString()}`);
 
-    const link = svg.append("g")
+    const link = svg
+        .append("g")
         .attr("fill", "none")
         .selectAll("g")
         .data(links)
@@ -135,7 +136,9 @@ function make_sankey(data, year) {
 //        .attr("stroke", d => d3.color(d.color) || color)
         .style("mix-blend-mode", "multiply");
 
-    link.append("path")
+    link
+        .append("path")
+        .attr('class','link')
         .attr("d", d3.sankeyLinkHorizontal())
         .attr("stroke-width", d => Math.max(1, d.width));
 
@@ -160,7 +163,7 @@ function make_sankey(data, year) {
 }
 // Time Slider
 
-var dataTime = d3.range(0, 10).map(function(d) {
+var dataTime = d3.range(0, 9).map(function(d) {
     return new Date(2011 + d, 10, 3);
   });
   
@@ -172,12 +175,14 @@ var dataTime = d3.range(0, 10).map(function(d) {
     .width(300)
     .tickFormat(d3.timeFormat('%Y'))
     .tickValues(dataTime)
-    .default(new Date(1998, 10, 3))
+    .default(new Date(2019, 10, 3))
     .on('onchange', function(val) {
         //console.log(d3.timeFormat('%Y')(val));
         year = d3.timeFormat('%Y')(val);
-        $("#Sankey").empty();
-        //console.log(year);
+        d3.selectAll("#Sankey")
+              .remove();
+        // $("#Sankey").empty();
+        // //console.log(year);
         make_sankey(dataset, year);
     
         // val => {
@@ -192,7 +197,7 @@ var dataTime = d3.range(0, 10).map(function(d) {
     .attr('height', 100)
     .append('g')
     .attr('transform', 'translate(30,30)');
-  
+
   gTime.call(sliderTime);
 
 //   d3.select("div#slider-time").on("onchange", function(d) {

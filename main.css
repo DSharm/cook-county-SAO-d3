@@ -24,7 +24,7 @@ ul li{
   min-width: 200px;
   text-align: center;  
   display: inline-block;
-  padding:25px;
+  padding:10px;
   color:rgb(160, 12, 12);
 }
 
@@ -38,6 +38,11 @@ ul li{
  
 }
 
+.container {
+  display: flex;
+  justify-content: center
+}
+
 text {
   font-family: 'tahoma';
 }
@@ -45,6 +50,14 @@ text {
 .column {
   flex: 50%;
   padding: 10px;
+}
+
+.slider {
+  cursor: default;
+}
+
+.handle {
+  cursor: pointer
 }
 
 polyline{
@@ -56,4 +69,31 @@ polyline{
 
 .axis .domain {
   display: none;
+}
+
+.link {
+
+  stroke-opacity: 0.3
+}
+
+.link:hover {
+  stroke-opacity: 0.9
+}
+
+.rect {
+  cursor:pointer
+}
+
+div.tooltip {	
+  position: absolute;			
+  text-align: center;		
+  text-justify: center;	
+  width: 85px;					
+  height: 50px;					
+  padding: 2px;				
+  font: 12px tahoma;		
+  background: rgb(192, 196, 202);	
+  border: 0px;		
+  border-radius: 8px;			
+  pointer-events: none;			
 }
