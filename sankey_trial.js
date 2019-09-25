@@ -9,6 +9,23 @@ var pieChartsHeight = 0.5 * barChartHeight;
 // https://observablehq.com/@mbostock/flow-o-matic
 var starting_year = "2019";
 
+var formatNumber = d3.format(",.0f"),
+    format = function(d) { return formatNumber(d) + " TWh"; },
+    color = d3.scaleOrdinal().range(["#107386", "#CF1264", "#681E70", "#ff8c00","#00ffc8"]);
+
+var sankeyColor = d3.scaleOrdinal()
+  .range(["#107386", "#CF1264", "#681E70", "#ff8c00","#00ffc8"]);
+
+var graph;
+
+var sankey = d3.sankey().nodeWidth(20)
+.nodePadding(50)
+.size([barChartWidth, height]);
+
+freqCounter =1;
+
+// var path = sankey.link();
+
 d3.json("processed_data/sent_intake_dispo_join_final.json")
 .then(function(data) {
     dataset = data;
@@ -23,17 +40,26 @@ function make_sankey(data, year) {
             .entries(data)
     //console.log(data_nested);
 
-    var sankey = d3.sankey().nodeWidth(20)
-        .nodePadding(50)
-        .size([barChartWidth, height]);
 
-    const svg = d3.select(".sankey")
-    .append('div')
-    .attr('id',"Sankey")
-    .append('svg')
-      .style("background", "#fff")
-      .style("width", width)
-      .style("height", height);    
+    // const canvas = d3.select(".sankey")
+    // .append('div')
+    // .attr('id',"Sankey")
+    // .append('canvas')
+    //   .style("background", "#fff")
+    //   .attr("width", width)
+    //   .attr("height", height);
+      
+    // const svg = d3.select("#Sankey")
+    //   .append('svg')
+    //     .style("background", "#fff")
+    //     .style("width", width)
+    //     .style("height", height);  
+
+    var svg = d3.select("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       graph = {"nodes" : [], "links" : []};
 
@@ -112,30 +138,95 @@ function make_sankey(data, year) {
 
     })
 
+    var node = svg.append("g")
+    .attr("class", "nodes")
+    .attr("font-family", "sans-serif")
+    .attr("font-size", 10)
+  .selectAll("g");
+
+  node = node
+    .data(nodes)
+    .enter().append("g")
+  	// .call(d3.drag()
+    //         .subject(function(d){return d})
+    //         .on('start', function () { this.parentNode.appendChild(this); })
+    //         .on('drag', dragmove));
 
 
-    svg.append("g")
-        .selectAll("rect")
-        .data(nodes)
-        .join("rect")
+//     var node = svg.append("g").selectAll(".node")
+//       .data(nodes)
+//       .join("g")
+//       .attr("class", "node")
+// //    nodes = svg.append("g")
+// //         .selectAll(".node")
+// //         .data(nodes)
+// //         .attr("class", "node")
+//         .call(d3.drag()
+//         .subject(function(d) {
+//           return d;
+//         })
+//         .on("start", function() {
+//           this.parentNode.appendChild(this);
+//         })
+//         .on("drag", dragmove));
+
+
+        node.append('rect')
         .attr("x", d => d.x0 + 1)
         .attr("y", d => d.y0)
         .attr("height", d => d.y1 - d.y0)
         .attr("width", d => d.x1 - d.x0 - 2)
         .attr("fill", d => {
-            let c;
-            for (const link of d.sourceLinks) {
-            if (c === undefined) c = link.color;
-            else if (c !== link.color) c = null;
+            //console.log(d.name)
+            if (d.name === "Case Participants") {
+                return sankeyColor(1);
             }
-            if (c === undefined) for (const link of d.targetLinks) {
-            if (c === undefined) c = link.color;
-            else if (c !== link.color) c = null;
+            else if (d.name === "Filed by LEA" || 
+                    d.name === "Rejected" ||
+                    d.name === "Approved" ||
+                    d.name === "Continued Investigation" ||
+                    d.name === "Other") {
+                        return sankeyColor(2)
+                    }
+            else if (d.name === "No Conviction" || 
+                    d.name === "Conviction" ||
+                    d.name === "Pending" ) {
+                return sankeyColor(3)
             }
-            return (d3.color(c) || d3.color(color)).darker(0.5);
+            else if (d.name === "Pending Sentence" || 
+                    d.name === "Jail" ||
+                    d.name === "Other Sentence" ||
+                    d.name === "Prison" ||
+                    d.name === "Probation"
+                    ) {
+                return sankeyColor(4)
+            }
+            // let c;
+            // for (const link of d.sourceLinks) {
+            // if (c === undefined) c = link.color;
+            // else if (c !== link.color) c = null;
+            // }
+            // if (c === undefined) for (const link of d.targetLinks) {
+            // if (c === undefined) c = link.color;
+            // else if (c !== link.color) c = null;
+            // }
+            // return (d3.color(c) || d3.color(color)).darker(0.5);
         })
         .append("title")
         .text(d => `${d.name}\n${d.value.toLocaleString()}`);
+        
+
+        // function dragmove(d) {
+        //     d3.select(this)
+        //       .attr("transform", 
+        //             "translate(" 
+        //                + d.x + "," 
+        //                + (d.y = Math.max(
+        //                   0, Math.min(height - d.dy, d3.event.y))
+        //                  ) + ")");
+        //     sankey.relayout();
+        //     link.attr("d", path);
+          
 
     const link = svg
         .append("g")
@@ -181,8 +272,92 @@ function make_sankey(data, year) {
         .text(d => ` ${d.value.toLocaleString()}`);
 
 
-    return svg.node();
+//    return svg.node();
+    // console.log(path.links)
+
+    var linkExtent = d3.extent(links, function (d) {
+        //console.log(d)
+        return d.value});
+    var frequencyScale = d3.scaleLinear().domain(linkExtent).range([1,100]);
+    var particleSize = d3.scaleLinear().domain(linkExtent).range([1,5]);
+
+
+  links.forEach(function (link) {
+    link.freq = frequencyScale(link.value);
+    link.particleSize = 2;
+    link.particleColor = d3.scaleLinear().domain([1,1000]).range([sankeyColor(1), sankeyColor(3)]);
+  })
+
+  var t = d3.timer(tick, 1000);
+  var particles = [];
+
+  function tick(elapsed, time) {
+
+    particles = particles.filter(function (d) {return d.time > (elapsed - 1000)});
+    //console.log(particles)
+    if (freqCounter > 100) {
+      freqCounter = 1;
+    }
+
+    d3.selectAll(".link")
+    .each(
+      function (d) {
+        if (d.freq >= freqCounter) {
+          var offset = (Math.random() - 0.1) * d.width;
+        //   console.log(offset);
+        //   console.log(d.y0)
+          particles.push({link: d, time: elapsed, offset: offset, path: this})
+        }
+      });
+
+    particleEdgeCanvasPath(elapsed);
+    freqCounter++;
+
+  }
+
+  function particleEdgeCanvasPath(elapsed) {
+    var context = d3.select("canvas").node().getContext("2d")
+
+    context.clearRect(0,0,1000,1000);
+
+      context.fillStyle = "gray";
+      context.lineWidth = "1px";
+    for (var x in particles) {
+        var currentTime = elapsed - particles[x].time;
+        var currentPercent = currentTime / 1000 * particles[x].path.getTotalLength();
+        
+        var currentPos = particles[x].path.getPointAtLength(currentPercent)
+        context.beginPath();
+      context.fillStyle = particles[x].link.particleColor(currentTime);
+        context.arc(currentPos.x,currentPos.y + particles[x].offset,particles[x].link.particleSize,0,2*Math.PI);
+        context.fill();
+    }
+  }
+
+
+
+
+
+
+
+
 }
+
+// function dragmove(d) {
+
+//     var rectY = d3.select(this).select("rect").attr("y");
+
+//     d.y0 = d.y0 + d3.event.dy;
+
+//     var yTranslate = d.y0 - rectY;
+
+//     d3.select(this).attr("transform", 
+//               "translate(0" + "," + (yTranslate) + ")");
+
+//     // sankey.update(graph);
+//     sankey.relayout();
+//     link.attr("d",d3.sankeyLinkHorizontal());
+//   }
 // Time Slider
 
 var dataTime = d3.range(0, 9).map(function(d) {

@@ -97,3 +97,11 @@ div.tooltip {
   border-radius: 8px;			
   pointer-events: none;			
 }
+
+svg {
+  position: absolute;
+}
+
+canvas {
+  position: absolute;
+}
