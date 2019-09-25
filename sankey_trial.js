@@ -21,7 +21,7 @@ function make_sankey(data, year) {
                 return d.receive_year;
             })
             .entries(data)
-    console.log(data_nested);
+    //console.log(data_nested);
 
     var sankey = d3.sankey().nodeWidth(20)
         .nodePadding(50)
@@ -95,6 +95,25 @@ function make_sankey(data, year) {
             links: graph.links.map(d => Object.assign({}, d))
         });
         //console.log(nodes);
+    
+    // links[1].source.x0 = 200;
+    // links[1].source.x1 = 210;
+    links.forEach(function(d) {
+       //console.log(d)
+        if (d.target.name === "Conviction") {
+            conviction_x0 = d.target.x0;
+            conviction_x1 = d.target.x1;
+        }
+
+        if (d.target.name === "No Conviction") {
+            d.target.x0 = conviction_x0;
+            d.target.x1 = conviction_x1;
+        }
+
+    })
+
+
+
     svg.append("g")
         .selectAll("rect")
         .data(nodes)
@@ -135,6 +154,8 @@ function make_sankey(data, year) {
 
 //        .attr("stroke", d => d3.color(d.color) || color)
         .style("mix-blend-mode", "multiply");
+    
+        //console.log(links)
 
     link
         .append("path")
@@ -158,6 +179,7 @@ function make_sankey(data, year) {
         .append("tspan")
         .attr("fill-opacity", 0.7)
         .text(d => ` ${d.value.toLocaleString()}`);
+
 
     return svg.node();
 }

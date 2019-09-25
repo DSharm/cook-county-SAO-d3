@@ -15,6 +15,7 @@
 // https://grokbase.com/t/gg/d3-js/156byjtyfv/how-to-change-opacity-of-links-when-clicked-on-a-node-in-sankey-diagram-using-d3-library
 // https://bl.ocks.org/johnwalley/e1d256b81e51da68f7feb632a53c3518
 // http://bl.ocks.org/d3noob/a22c42db65eb00d4e369
+// http://bl.ocks.org/danharr/af796d91926d254dfe99
 
 
 // Set up margins, width, and chart sizes
