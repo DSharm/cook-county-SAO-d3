@@ -16,6 +16,7 @@
 // https://bl.ocks.org/johnwalley/e1d256b81e51da68f7feb632a53c3518
 // http://bl.ocks.org/d3noob/a22c42db65eb00d4e369
 // http://bl.ocks.org/danharr/af796d91926d254dfe99
+// https://codepen.io/zakariachowdhury/pen/JEmjwq
 
 
 // Set up margins, width, and chart sizes
@@ -876,6 +877,15 @@ svg.append("g")
 
 
 /*
+
+next steps:
+- add legend to line charts
+- add mouseover to pie charts
+- put line charts on same page as sankey
+- dynamically change variables (not diff pages)
+- vertical line on mouseover of circles
+
+
 
 next steps:
 - bar charts - add highlighting on bars on click/mouseover. show values on mouseover
