@@ -57,7 +57,7 @@ Promise.all([
 });
 
 function makeVis(allData,config) {
-  
+  //console.log(allData[config["order"]]);
   nested_data = nested(allData[config["order"]],config);
   makebarChart(nested_data,config);
 };
@@ -116,9 +116,11 @@ function nested(dataset,config) {
 // make bar chart
 function makebarChart(dataset, config) {
   figureID = config["name"];
+  //console.log(figureID)
   var parentElement = d3.select("#" + figureID );
   $("#" + figureID).empty();
-
+  //console.log(dataset);
+  //console.log(config);
   // Define the div for the tooltip
   var div = parentElement.append("div")	
   .attr("class", "tooltip")				
@@ -201,7 +203,7 @@ function makebarChart(dataset, config) {
             .attr('font-family', 'tahoma')
             .attr('font-size',14);
   
-
+    //console.log(dataset)
   var groups_g = barChart.selectAll(".group")
     .data(dataset)
     .enter().append("g")
@@ -209,11 +211,13 @@ function makebarChart(dataset, config) {
       return 'group group-' + d.key;
     })
     .attr("transform", function(d) {
+      //console.log(d)
       return "translate(" + x_years(d.key) + ",0)";
     });
 
   var categories_g = groups_g.selectAll(".category")
     .data(function(d) {
+      //console.log(d)
       return d.values;
     })
     .enter().append("g")
@@ -236,6 +240,7 @@ function makebarChart(dataset, config) {
       return 0;
     })
     .attr("y", function(d) {
+      //console.log(d)
       return y(d.Total);
     })
     .attr("height", function(d) {
@@ -257,7 +262,7 @@ function makebarChart(dataset, config) {
     .on("mouseover",mouseover)
     .on("mouseout",mouseout);// mouseout is defined below.
 
-    console.log(results);
+    //console.log(results);
     // Create a legend - need to make this dynamic to account for other charts (not Intake)
     
     // https://bl.ocks.org/bricedev/0d95074b6d83a77dc3ad

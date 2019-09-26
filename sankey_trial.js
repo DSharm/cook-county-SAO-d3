@@ -41,13 +41,13 @@ function make_sankey(data, year) {
     //console.log(data_nested);
 
 
-    // const canvas = d3.select(".sankey")
-    // .append('div')
-    // .attr('id',"Sankey")
-    // .append('canvas')
-    //   .style("background", "#fff")
-    //   .attr("width", width)
-    //   .attr("height", height);
+    const svg = d3.select(".sankey")
+    .append('div')
+    .attr('id',"Sankey")
+    .append('svg')
+      .style("background", "#fff")
+      .attr("width", width)
+      .attr("height", height);
       
     // const svg = d3.select("#Sankey")
     //   .append('svg')
@@ -55,11 +55,11 @@ function make_sankey(data, year) {
     //     .style("width", width)
     //     .style("height", height);  
 
-    var svg = d3.select("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+//     var svg = d3.select("svg")
+//     .attr("width", width + margin.left + margin.right)
+//     .attr("height", height + margin.top + margin.bottom)
+//   .append("g")
+//     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       graph = {"nodes" : [], "links" : []};
 
@@ -74,7 +74,7 @@ function make_sankey(data, year) {
                 graph.links.push({ "source": d.source,
                                     "target": d.target,
                                     "value": +d.value,
-                                    "color": "#dddddd"  });
+                                    "color": "#A9A9A9"  });
             })
         }
         
@@ -275,64 +275,64 @@ function make_sankey(data, year) {
 //    return svg.node();
     // console.log(path.links)
 
-    var linkExtent = d3.extent(links, function (d) {
-        //console.log(d)
-        return d.value});
-    var frequencyScale = d3.scaleLinear().domain(linkExtent).range([1,100]);
-    var particleSize = d3.scaleLinear().domain(linkExtent).range([1,5]);
+//     var linkExtent = d3.extent(links, function (d) {
+//         //console.log(d)
+//         return d.value});
+//     var frequencyScale = d3.scaleLinear().domain(linkExtent).range([1,100]);
+//     var particleSize = d3.scaleLinear().domain(linkExtent).range([1,5]);
 
 
-  links.forEach(function (link) {
-    link.freq = frequencyScale(link.value);
-    link.particleSize = 2;
-    link.particleColor = d3.scaleLinear().domain([1,1000]).range([sankeyColor(1), sankeyColor(3)]);
-  })
+//   links.forEach(function (link) {
+//     link.freq = frequencyScale(link.value);
+//     link.particleSize = 2;
+//     link.particleColor = d3.scaleLinear().domain([1,1000]).range([sankeyColor(1), sankeyColor(3)]);
+//   })
 
-  var t = d3.timer(tick, 1000);
-  var particles = [];
+//   var t = d3.timer(tick, 1000);
+//   var particles = [];
 
-  function tick(elapsed, time) {
+//   function tick(elapsed, time) {
 
-    particles = particles.filter(function (d) {return d.time > (elapsed - 1000)});
-    //console.log(particles)
-    if (freqCounter > 100) {
-      freqCounter = 1;
-    }
+//     particles = particles.filter(function (d) {return d.time > (elapsed - 1000)});
+//     //console.log(particles)
+//     if (freqCounter > 100) {
+//       freqCounter = 1;
+//     }
 
-    d3.selectAll(".link")
-    .each(
-      function (d) {
-        if (d.freq >= freqCounter) {
-          var offset = (Math.random() - 0.1) * d.width;
-        //   console.log(offset);
-        //   console.log(d.y0)
-          particles.push({link: d, time: elapsed, offset: offset, path: this})
-        }
-      });
+//     d3.selectAll(".link")
+//     .each(
+//       function (d) {
+//         if (d.freq >= freqCounter) {
+//           var offset = (Math.random() - 0.1) * d.width;
+//         //   console.log(offset);
+//         //   console.log(d.y0)
+//           particles.push({link: d, time: elapsed, offset: offset, path: this})
+//         }
+//       });
 
-    particleEdgeCanvasPath(elapsed);
-    freqCounter++;
+//     particleEdgeCanvasPath(elapsed);
+//     freqCounter++;
 
-  }
+//   }
 
-  function particleEdgeCanvasPath(elapsed) {
-    var context = d3.select("canvas").node().getContext("2d")
+//   function particleEdgeCanvasPath(elapsed) {
+//     var context = d3.select("canvas").node().getContext("2d")
 
-    context.clearRect(0,0,1000,1000);
+//     context.clearRect(0,0,1000,1000);
 
-      context.fillStyle = "gray";
-      context.lineWidth = "1px";
-    for (var x in particles) {
-        var currentTime = elapsed - particles[x].time;
-        var currentPercent = currentTime / 1000 * particles[x].path.getTotalLength();
+//       context.fillStyle = "gray";
+//       context.lineWidth = "1px";
+//     for (var x in particles) {
+//         var currentTime = elapsed - particles[x].time;
+//         var currentPercent = currentTime / 1000 * particles[x].path.getTotalLength();
         
-        var currentPos = particles[x].path.getPointAtLength(currentPercent)
-        context.beginPath();
-      context.fillStyle = particles[x].link.particleColor(currentTime);
-        context.arc(currentPos.x,currentPos.y + particles[x].offset,particles[x].link.particleSize,0,2*Math.PI);
-        context.fill();
-    }
-  }
+//         var currentPos = particles[x].path.getPointAtLength(currentPercent)
+//         context.beginPath();
+//       context.fillStyle = particles[x].link.particleColor(currentTime);
+//         context.arc(currentPos.x,currentPos.y + particles[x].offset,particles[x].link.particleSize,0,2*Math.PI);
+//         context.fill();
+//     }
+//   }
 
 
 
