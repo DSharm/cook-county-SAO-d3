@@ -63,6 +63,8 @@ text:hover {
 
 .slider {
   cursor: default;
+  display: flex;
+  justify-content: center;
 }
 
 .handle {

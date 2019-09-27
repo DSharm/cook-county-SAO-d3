@@ -1,4 +1,4 @@
-var margin = {top: 40,right: 40,bottom: 25,left: 40};
+var margin_sankey = {top: 40,right: 40,bottom: 25,left: 40};
 var width_sankey = 900;
 var height_sankey = 450;
 // var barChartWidth = width - margin.right;
@@ -20,7 +20,7 @@ var graph;
 
 var sankey = d3.sankey().nodeWidth(20)
 .nodePadding(50)
-.size([(width_sankey-margin.right), height_sankey]);
+.size([(width_sankey-margin_sankey.right), height_sankey]);
 
 freqCounter =1;
 
@@ -28,8 +28,8 @@ freqCounter =1;
 
 d3.json("processed_data/sent_intake_dispo_join_final.json")
 .then(function(data) {
-    dataset = data;
-    make_sankey(dataset,starting_year);    
+    sankey_data = data;
+    make_sankey(sankey_data,starting_year);    
 });
 
 function make_sankey(data, year) {
@@ -379,8 +379,8 @@ var dataTime = d3.range(0, 9).map(function(d) {
         d3.selectAll("#Sankey")
               .remove();
         // $("#Sankey").empty();
-        // //console.log(year);
-        make_sankey(dataset, year);
+        //console.log(dataset);
+        make_sankey(sankey_data, year);
     
         // val => {
         // d3.select('p#value-time').text(d3.timeFormat('%Y')(val));
