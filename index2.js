@@ -64,6 +64,9 @@ var color_race = d3.scaleOrdinal()
 var color_gender = d3.scaleOrdinal()
   .range(["#d0743c", "#ff8c00"]);
 
+// variable = "Intake";
+
+// //datasetG = []
 // Load data
 Promise.all([
   d3.json("processed_data/intake_year_race_gender.json"),
@@ -71,61 +74,233 @@ Promise.all([
   d3.json("processed_data/sent_year_race_gender.json")
 ]).then(function(allData) {
 
+    // dataset.push(allData)
+
+    //console.log(allData)
+    //console.log(Configuration.BarCharts)
+    makeVis2(allData,Configuration.BarCharts);
+    
   // https://github.com/UrbanInstitute/state-economic-monitor
-  $.each(Configuration.BarCharts, function(x, config) {
-    makeVis(allData,config);
-  })
+//   $.each(Configuration.BarCharts, function(x, config) {
+    
+//     makeVis(allData,config,variable);
+//   })
 });
 
-function makeVis(allData,config) {
-//   console.log(allData[config["order"]]);
+// Make buttons
+button_width = 100
+button_height = 50
+buttonOpacity = 0.5
+buttonOpacityHover = 0.9
 
-//   data = allData[config["order"]]
+IntakeSvg = d3.select("#Intake")
+    .append("svg")
+    .attr("width", (button_width+margin)+"px")
+    .attr("height", (button_height+margin)+"px")
+    .append('g')
+    .attr("transform", `translate(${margin}, ${margin})`);
 
-//   data.forEach
-//         intakeColor.domain(d3.keys(data[0]).filter(function(key) {
-//             return key !== "Year" && key !== "_id";
-//         }));
-//         // Correct the types
-//         data.forEach(function(d) {
-//         d.date = parseTime(d.Time);
-//         });
-//         console.log(data);
+IntakeSvg.append("rect")
+    .attr("class", "rect")
+    .attr("width", button_width)
+    .attr("height", button_height)
+    .attr("fill", "#107386")
+    .attr("opacity",buttonOpacity)
+    .on("mouseover", function(d) {
+        d3.select(this)
+        .style('opacity', buttonOpacityHover)
 
-//         var currencies = color.domain().map(function(name) {
-//         return {
-//             name: name,
-//             values: data.map(function(d) {
-//             return {
-//                 date: d.date,
-//                 worth: +d[name]
-//             };
-//             })
-//         };
-//         });
-//         console.log(currencies)
-//         // Set the X domain
-//         x.domain(d3.extent(data, function(d) {
-//         return d.date;
-//         }));
-//         // Set the Y domain
-//         y.domain([
-//         d3.min(currencies, function(c) {
-//             return d3.min(c.values, function(v) {
-//             return v.worth;
-//             });
-//         }),
-//         d3.max(currencies, function(c) {
-//             return d3.max(c.values, function(v) {
-//             return v.worth;
-//             });
-//         })
-//         ]);
+    })
+    .on("mouseout", function(d) {
+        d3.select(this)
+        .style('opacity', buttonOpacity)
+
+    })
+
+IntakeSvg.append("text")
+    .text("Intake")
+    .attr("transform", "translate(" + (button_width/2) + "," + (button_height/2) + ")")
+    .attr("text-anchor", "middle")
+    .style('fill',"black")
+    .attr('font-size',12);
+
+dispSvg = d3.select("#Disposition")
+    .append("svg")
+    .attr("width", (button_width+margin)+"px")
+    .attr("height", (button_height+margin)+"px")
+    .append('g')
+    .attr("transform", `translate(${margin}, ${margin})`);
+
+dispSvg.append("rect")
+    .attr("class", "rect")
+    .attr("width", button_width)
+    .attr("height", button_height)
+    .attr("fill", "#CF1264")
+    .attr("opacity",buttonOpacity)
+    .on("mouseover", function(d) {
+        d3.select(this)
+        .style('opacity', buttonOpacityHover)
+
+    })
+    .on("mouseout", function(d) {
+        d3.select(this)
+        .style('opacity', buttonOpacity)
+
+    })
+
+dispSvg.append("text")
+    .text("Disposition")
+    .attr("transform", "translate(" + (button_width/2) + "," + (button_height/2) + ")")
+    .attr("text-anchor", "middle")
+    .style('fill',"black")
+    .attr('font-size',12);
+
+sentSvg = d3.select("#Sentence")
+    .append("svg")
+    .attr("width", (button_width+margin)+"px")
+    .attr("height", (button_height+margin)+"px")
+    .append('g')
+    .attr("transform", `translate(${margin}, ${margin})`);
+
+sentSvg.append("rect")
+    .attr("class", "rect")
+    .attr("width", button_width)
+    .attr("height", button_height)
+    .attr("fill", "#ff8c00")
+    .attr("opacity",buttonOpacity)
+    .on("mouseover", function(d) {
+        d3.select(this)
+        .style('opacity', buttonOpacityHover)
+
+    })
+    .on("mouseout", function(d) {
+        d3.select(this)
+        .style('opacity', buttonOpacity)
+
+    })
+
+sentSvg.append("text")
+    .text("Sentencing")
+    .attr("transform", "translate(" + (button_width/2) + "," + (button_height/2) + ")")
+    .attr("text-anchor", "middle")
+    .style('fill',"black")
+    .attr('font-size',12);
+    
 
 
-  nested_data = nested(allData[config["order"]],config);
-  makebarChart(nested_data,config);
-};
+function makeVis2(allData,Configuration) {
+
+    // Initial chart
+    dataset = allData[0];
+    config = Configuration["Intake"]
+
+    nested_data = nested(dataset,config)
+
+    makebarChart(nested_data,config);
+
+    //console.log(Configuration)
+    document.getElementById("Intake").addEventListener('click', function(event) {
+        dataset = allData[0];
+        config = Configuration["Intake"]
+        nested_data = nested(dataset,config)
+
+        makebarChart(nested_data,config);
+        
+      })
+
+      document.getElementById("Disposition").addEventListener('click', function(event) {
+        dataset = allData[1];
+        config = Configuration["Disposition"]
+        //console.log(dataset)
+        //console.log(config)
+
+        nested_data = nested(dataset,config)
+
+        makebarChart(nested_data,config);
+        
+      })
+      document.getElementById("Sentence").addEventListener('click', function(event) {
+        dataset = allData[2];
+        config = Configuration["Sentence"]
+        //console.log(dataset)
+        //console.log(config)
+
+        nested_data = nested(dataset,config)
+
+        makebarChart(nested_data,config);
+        
+      })
+
+}
+
+
+// function makeVis(allData,config,variable) {
+
+// //   console.log(allData[config["order"]]);
+
+// //   data = allData[config["order"]]
+
+// //   data.forEach
+// //         intakeColor.domain(d3.keys(data[0]).filter(function(key) {
+// //             return key !== "Year" && key !== "_id";
+// //         }));
+// //         // Correct the types
+// //         data.forEach(function(d) {
+// //         d.date = parseTime(d.Time);
+// //         });
+// //         console.log(data);
+
+// //         var currencies = color.domain().map(function(name) {
+// //         return {
+// //             name: name,
+// //             values: data.map(function(d) {
+// //             return {
+// //                 date: d.date,
+// //                 worth: +d[name]
+// //             };
+// //             })
+// //         };
+// //         });
+// //         console.log(currencies)
+// //         // Set the X domain
+// //         x.domain(d3.extent(data, function(d) {
+// //         return d.date;
+// //         }));
+// //         // Set the Y domain
+// //         y.domain([
+// //         d3.min(currencies, function(c) {
+// //             return d3.min(c.values, function(v) {
+// //             return v.worth;
+// //             });
+// //         }),
+// //         d3.max(currencies, function(c) {
+// //             return d3.max(c.values, function(v) {
+// //             return v.worth;
+// //             });
+// //         })
+// //         ]);
+
+
+//   nested_data = nested(allData[config["order"]],config);
+
+// //   datasetG.push(nested_data)
+
+  
+
+// //Make initial chart
+
+// if (config["name"] === variable) {
+//     console.log(variable)
+//     makebarChart(nested_data,config);
+// }
+
+//     // return datasetG
+// };
+
+// console.log(datasetG)
+
+// data = makeVis
+// console.log(intake)
 
 // Function to nest the data and then create Race/Gender arrays
 function nested(dataset,config) {
@@ -184,13 +359,16 @@ function nested(dataset,config) {
         return nested_total;
 };
 
-// make bar chart
+// make initial chart
 function makebarChart(data, config) {
-  figureID = config["name"];
-  var parentElement = d3.select("#" + figureID );
-  $("#" + figureID).empty();
-    
-  //console.log(data);
+//     console.log(config["name"]);
+//     figureID = config["name"];
+//   var parentElement = d3.select("#" + figureID );
+    $(".lineChart").empty();
+    var parentElement = d3.select(".lineChart").append('div')
+
+    // data = data
+    //console.log(data);
   /* Format Data */
     var parseDate = d3.timeParse("%Y");
     data.forEach(function(d) { 
@@ -555,6 +733,16 @@ svg.append("g")
     }
   };
 
+function updateLineChart(variable) {
+
+
+
+
+
+
+}
+
+
 
 //   // Define the div for the tooltip
 //   var div = parentElement.append("div")	
@@ -884,6 +1072,7 @@ next steps:
 - put line charts on same page as sankey
 - dynamically change variables (not diff pages)
 - vertical line on mouseover of circles
+- change data!!!!!! to be by receive year
 
 
 

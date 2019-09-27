@@ -1,10 +1,10 @@
 var margin = {top: 40,right: 40,bottom: 25,left: 40};
-var width = 900;
-var height = 450;
-var barChartWidth = width - margin.right;
-var barChartHeight = height  - margin.top*9;
-var pieChartsWidth = 0.1 * width;
-var pieChartsHeight = 0.5 * barChartHeight;
+var width_sankey = 900;
+var height_sankey = 450;
+// var barChartWidth = width - margin.right;
+// var barChartHeight = height  - margin.top*9;
+// var pieChartsWidth = 0.1 * width;
+// var pieChartsHeight = 0.5 * barChartHeight;
 
 // https://observablehq.com/@mbostock/flow-o-matic
 var starting_year = "2019";
@@ -20,7 +20,7 @@ var graph;
 
 var sankey = d3.sankey().nodeWidth(20)
 .nodePadding(50)
-.size([barChartWidth, height]);
+.size([(width_sankey-margin.right), height_sankey]);
 
 freqCounter =1;
 
@@ -46,8 +46,8 @@ function make_sankey(data, year) {
     .attr('id',"Sankey")
     .append('svg')
       .style("background", "#fff")
-      .attr("width", width)
-      .attr("height", height);
+      .attr("width", width_sankey)
+      .attr("height", height_sankey);
       
     // const svg = d3.select("#Sankey")
     //   .append('svg')
@@ -262,10 +262,10 @@ function make_sankey(data, year) {
         .selectAll("text")
         .data(nodes)
         .join("text")
-        .attr("x", d => d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6)
+        .attr("x", d => d.x0 < width_sankey / 2 ? d.x1 + 6 : d.x0 - 6)
         .attr("y", d => (d.y1 + d.y0) / 2)
         .attr("dy", "0.35em")
-        .attr("text-anchor", d => d.x0 < width / 2 ? "start" : "end")
+        .attr("text-anchor", d => d.x0 < width_sankey / 2 ? "start" : "end")
         .text(d => d.name)
         .append("tspan")
         .attr("fill-opacity", 0.7)
