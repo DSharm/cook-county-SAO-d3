@@ -48,6 +48,10 @@ ul li{
   justify-content: center;
 }
 
+rect:hover {
+  opacity: 0.9;
+}
+
 text {
   font-family: 'tahoma';
 }

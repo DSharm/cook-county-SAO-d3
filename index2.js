@@ -61,42 +61,7 @@ Promise.all([
 //   })
 });
 
-// Make buttons
-button_width = 100
-button_height = 50
-buttonOpacity = 0.5
-buttonOpacityHover = 0.9
 
-IntakeSvg = d3.select("#Intake")
-    .append("svg")
-    .attr("width", (button_width+margin)+"px")
-    .attr("height", (button_height+margin)+"px")
-    .append('g')
-    .attr("transform", `translate(${margin}, ${margin})`);
-
-IntakeSvg.append("rect")
-    .attr("class", "rect")
-    .attr("width", button_width)
-    .attr("height", button_height)
-    .attr("fill", "#107386")
-    .attr("opacity",buttonOpacity)
-    .on("mouseover", function(d) {
-        d3.select(this)
-        .style('opacity', buttonOpacityHover)
-
-    })
-    .on("mouseout", function(d) {
-        d3.select(this)
-        .style('opacity', buttonOpacity)
-
-    })
-
-IntakeSvg.append("text")
-    .text("Intake")
-    .attr("transform", "translate(" + (button_width/2) + "," + (button_height/2) + ")")
-    .attr("text-anchor", "middle")
-    .style('fill',"black")
-    .attr('font-size',12);
 
 dispSvg = d3.select("#Disposition")
     .append("svg")
@@ -160,6 +125,10 @@ sentSvg.append("text")
     .style('fill',"black")
     .attr('font-size',12);
     
+//Define key function, to be used when binding data
+var key = function(d) {
+    return d.key;
+};
 
 
 function makeVis2(allData,Configuration) {
@@ -168,42 +137,616 @@ function makeVis2(allData,Configuration) {
     dataset = allData[0];
     config = Configuration["Intake"]
 
-    nested_data = nested(dataset,config)
+    data = nested(dataset,config)
 
-    makebarChart(nested_data,config);
+    disp = allData[1];
+    config_disp = Configuration["Disposition"]
 
-    //console.log(Configuration)
-    document.getElementById("Intake").addEventListener('click', function(event) {
-        dataset = allData[0];
-        config = Configuration["Intake"]
-        nested_data = nested(dataset,config)
+    disp_data = nested(disp,config_disp)
 
-        makebarChart(nested_data,config);
+
+    $(".lineChart").empty();
+    var parentElement = d3.select(".lineChart").append('div')
+
+    // data = data
+    //console.log(data);
+  /* Format Data */
+    var parseDate = d3.timeParse("%Y");
+    data.forEach(function(d) { 
+        //console.log(d)
+        d.values.forEach(function(d) {
+            d.Year = parseDate(d.key);
+            d.Total = +d.Total;    
+            //console.log(d.Year)
+    });
+    }); 
+
+    // console.log(data);
+
+        /* Scale */
+        var xScale = d3.scaleTime()
+        .domain(d3.extent(data[0].values, d => d.Year))
+        .range([0, width-margin]);
+
+        var max = data[0].values[0].Total;
+
+        data.forEach(function(d) {
+            d.values.forEach(function(d) {
+                if (d.Total > max) {
+                    max = d.Total
+                }
+            })
+        })
+        // var max = d3.max(data, function(d) {
+        //     console.log(d)
+        //     d3.max(d.values, function(d) {
+
+        //     })
+        //     })
+        console.log(max)
+        var yScale = d3.scaleLinear()
+        .domain([0, max])
+        .range([height-margin, 0]);
+
+        var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+        /* Add SVG */
+        var svg = parentElement.append("svg")
+        .attr("width", (width+margin)+"px")
+        .attr("height", (height+margin)+"px")
+        .append('g')
+        .attr("transform", `translate(${margin}, ${margin})`);
+
+        button_width = 100
+        button_height = 50
+        buttonOpacity = 0.5
+        buttonOpacityHover = 0.9
+
+        DispSvg = d3.select("#Intake")
+        .append("svg")
+        .attr("width", (button_width+margin)+"px")
+        .attr("height", (button_height+margin)+"px")
+        .attr("transform", `translate(${margin}, ${margin})`)
+        .append('g')
+        // .attr("transform", `translate(${margin}, ${margin})`);
         
-      })
+        // append("g")
+        //                 .attr("id","DispButton")
+        //                 .attr("transform", "translate(" + (-20) + "," + (-70)  + ")");
 
-      document.getElementById("Disposition").addEventListener('click', function(event) {
-        dataset = allData[1];
-        config = Configuration["Disposition"]
-        //console.log(dataset)
-        //console.log(config)
+        DispSvg.append("rect")
+						.attr("x", 0)
+                        .attr("y", 0)
+                        .attr("fill","blue")
+						.attr("width", 70)
+						.attr("height", 30);
+					
+                        DispSvg.append("text")
+						.attr("x", 7)
+						.attr("y", 20)
+                        .text("Disposition");
+                        
+            //             d3.select("#Intake")
+            // .append("svg")
+            // .attr("width", (button_width+margin)+"px")
+            // .attr("height", (button_height+margin)+"px")
+            // .attr("transform", `translate(${margin}, ${margin})`)
+            // .append('g')
+            // // .attr("transform", `translate(${margin}, ${margin})`);
 
-        nested_data = nested(dataset,config)
+        // IntakeSvg.append("rect")
+        //     .attr("class", "rect")
+        //     .attr("width", button_width)
+        //     .attr("height", button_height)
+        //     .attr("fill", "#107386")
+        //     .attr("opacity",buttonOpacity)
+            // .on("mouseover", function(d) {
+            //     d3.select(this)
+            //     .style('opacity', buttonOpacityHover)
 
-        makebarChart(nested_data,config);
+            // })
+            // .on("mouseout", function(d) {
+            //     d3.select(this)
+            //     .style('opacity', buttonOpacity)
+
+            // })
+
+        // IntakeSvg.append("text")
+        //     .text("Intake")
+        //     .attr("transform", "translate(" + (button_width/2) + "," + (button_height/2) + ")")
+        //     .attr("text-anchor", "middle")
+        //     .style('fill',"black")
+        //     .attr('font-size',12);
+
+        /* Add line into SVG */
+        var line = d3.line()
+        .x(d => xScale(d.Year))
+        .y(d => yScale(d.Total));
+
+        let lines = svg.append('g')
+        .attr('class', 'lines');
+
+        console.log(data);
+    line_groups =    lines.selectAll('.line-group')
+        .data(data,key)
+        .enter()
+        .append('g')
+        .attr('class', 'line-group')  
+        .on("mouseover", function(d, i) {
+            svg.append("text")
+                .attr("class", "title-text")
+                .style("fill", color(i))        
+                .text(d.key)
+                .attr("text-anchor", "middle")
+                .attr("x", (width-margin)/2)
+                .attr("y", 5);
+            })
+        .on("mouseout", function(d) {
+            svg.select(".title-text").remove();
+            })
+
+    path = line_groups.append('path')
+        .attr('class', 'line')  
+        .attr('d', d => line(d.values))
+        .style('stroke', (d, i) => color(i))
+        .on("mouseover", function(d) {
+            d3.selectAll('.line')
+                            .style('opacity', otherLinesOpacityHover);
+            d3.selectAll('.circle')
+                            .style('opacity', circleOpacityOnLineHover);
+            d3.select(this)
+                .style('opacity', lineOpacityHover)
+                .style("stroke-width", lineStrokeHover)
+                .style("cursor", "pointer");
+            })
+        .on("mouseout", function(d) {
+            d3.selectAll(".line")
+                            .style('opacity', lineOpacity);
+            d3.selectAll('.circle')
+                            .style('opacity', circleOpacity);
+            d3.select(this)
+                .style("stroke-width", lineStroke)
+                .style("cursor", "none");
+            });
+
         
-      })
-      document.getElementById("Sentence").addEventListener('click', function(event) {
-        dataset = allData[2];
-        config = Configuration["Sentence"]
-        //console.log(dataset)
-        //console.log(config)
+        // svg.selectAll(".line")
+        //     .style('opacity', 0)
+        //     .transition()
+        //     .duration(2000)
+        //     .style('opacity', lineOpacity)
+        //     .style('stroke', "blue")
+        //     .style('stroke', (d, i) => color(i))
 
-        nested_data = nested(dataset,config)
+        var totalLength = path.node().getTotalLength();
 
-        makebarChart(nested_data,config);
+// Set Properties of Dash Array and Dash Offset and initiate Transition
+// http://duspviz.mit.edu/d3-workshop/transitions-animation/
+path
+	.attr("stroke-dasharray", totalLength + " " + totalLength)
+	.attr("stroke-dashoffset", totalLength)
+  .transition() // Call Transition Method
+	.duration(2000) // Set Duration timing (ms)
+	.ease(d3.easeLinear) // Set Easing option
+	.attr("stroke-dashoffset", 0); // Set final value of dash-offset for transition
+            
+
+        DispSvg.on("click", function(d) {
+            var t = d3.transition().duration(750)
+
+
+            var lineTransitions = svg.selectAll(".line")
+                                    .data(disp_data,key)
+                                    
+
+            // lineTransitions.transition()
+            //                 .duration(750)
+            //                 .remove();
+                                    
+            lineTransitions.select(".line")
+            .attr('d', d => line(d.values))
+            .style('stroke', (d, i) => color(i))
+            .style('opacity', lineOpacity)
+                                //     .attr("y", 0)
+                                //     .style("fill-opacity", 1)
+                                //   .transition(t)
+                                //     .attr("x", function(d, i) { return i * 32; });
+                
+                // lineTransitions.enter().append("g").attr('class',"line-group")
+                // lineTransitions.selectAll('.line')
+                //                 .append('path')
+                //                 .attr("class","line")
+                //                 .attr("d", d => line(d.values))
+                //                 .transition(t)
+                                
+                                // .duration(750)
+                                
+                
+            // lineGroups = lineTransitions.enter()
+            // .append('g')
+            // .attr('class', 'line-group')  
+
+            // lineGroups.append('path')
+            //             .attr("class","line")
+            //             .transition()
+            //             .selectAll('.line')
+            //             .duration(750)
+            //             .attr("d", d => line(d.values))
+
+            // lineTransitions.exit().remove()
+
+
+            // lineTransitions.select(".line")
+            //                         .append("path")
+            //                         .transition()
+            //                         .duration(1000)
+            //                         .attr("d", function(d) {
+            //                             line(d.values)
+            //                         })
+            //                         .exit()
+            //                         .remove()
+            
+            //Set y scale back to original domain
+            var max = disp_data[0].values[0].Total;
+            disp_data.forEach(function(d) {
+                d.values.forEach(function(d) {
+                    if (d.Total > max) {
+                        max = d.Total
+                    }
+                })
+            })
+            // var max = d3.max(data, function(d) {
+            //     console.log(d)
+            //     d3.max(d.values, function(d) {
+    
+            //     })
+            //     })
+            
+            console.log(max)
+            yScale.domain([0, max])
+            
+            svg.selectAll(".y.axis")
+                            .transition()
+                            .duration(750)
+                            .call(yAxis)
+                            
+
+
+
+
+        })
+
+
+
+
+        // /* Add circles in the line */
+        // lines.selectAll("circle-group")
+        // .data(data,key)
+        // .enter()
+        // .append("g")
+        // .style("fill", (d, i) => color(i))
+        // .selectAll("circle")
+        // .data(d => d.values).enter()
+        // .append("g")
+        // .attr("class", "circle")  
+        // .on("mouseover", function(d) {
+        //     d3.select(this)     
+        //         .style("cursor", "pointer")
+        //         .append("text")
+        //         .attr("class", "text")
+        //         .text(`${d.Total}`)
+        //         .attr("x", d => xScale(d.Year) + 5)
+        //         .attr("y", d => yScale(d.Total) - 10);
+        //     })
+        // .on("mouseout", function(d) {
+        //     d3.select(this)
+        //         .style("cursor", "none")  
+        //         .transition()
+        //         .duration(duration)
+        //         .selectAll(".text").remove();
+        //     })
+        // .append("circle")
+        // .attr("cx", d => xScale(d.Year))
+        // .attr("cy", d => yScale(d.Total))
+        // .attr("r", circleRadius)
+        // .style('opacity', circleOpacity)
+        // .on("click", click)
+        // .on("mouseover", function(d) {
+        //         d3.select(this)
+        //         .transition()
+        //         .duration(duration)
+        //         .attr("r", circleRadiusHover);
+        //     })
+        //     .on("mouseout", function(d) {
+        //         d3.select(this) 
+        //         .transition()
+        //         .duration(duration)
+        //         .attr("r", circleRadius);  
+        //     });
+
+
+        /* Add Axis into SVG */
+        var xAxis = d3.axisBottom(xScale).ticks(10);
+        var yAxis = d3.axisLeft(yScale).ticks(12);
+
+        svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", `translate(0, ${height-margin})`)
+        .call(xAxis);
+
         
-      })
+     svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+    
+    svg.selectAll(".y.axis")
+        .transition()
+        .duration(1000)
+        .call(yAxis)
+
+    //   y_axis.transition()
+    //         .duration(750)
+           
+        // .call(yAxis)
+        // .append('text')
+        // //.attr("y", 15)
+        // .attr('x', 40)
+        // .attr("transform", "rotate(-90)")
+        // .attr("fill", "#000")
+        // .text("Total cases");
+
+
+        function click(d){  // utility function to be called on mouseover.
+            d3.selectAll(".pie")
+            .transition()
+            .duration(1)
+            .attr('opacity',0)
+            .remove();  
+
+            gender = d.Gender;
+            race = d.Race;
+                
+            // call update functions of pie-chart and legend.    
+            pC.update(gender,race,"on");
+        }
+
+
+  
+  var pC = {};
+  
+  pC.update = function(gender,race, mouse){
+  
+    if (mouse === "on") {
+  
+    var w = 170;
+    var h = 170;
+  
+    var outerRadius = w/2;
+    var innerRadius = w/4;
+    
+    var arc = d3.arc().innerRadius(innerRadius).outerRadius(outerRadius);
+    var pie = d3.pie().value(function(d) { return d.value ;} );
+  
+    function midAngle(d) { return d.startAngle + (d.endAngle - d.startAngle) / 2; } 
+      
+    var radius = Math.min(w, h)/2;
+    var outerArc_gender = d3.arc()
+          .outerRadius(radius * 1.1)
+          .innerRadius(radius * 1.1);
+    
+    // referenced https://bl.ocks.org/laxmikanta415/dc33fe11344bf5568918ba690743e06f  
+    // GENDER BREAKDOWN
+    gender_chart_x = pieChartsWidth * 5 + margin.left;  
+  
+    pieSvg = parentElement.append('svg')
+                        .attr("width", pieChartsWidth )
+                        .attr("height",pieChartsHeight)
+                        .attr("class", "pie");
+
+    pieChart_gender = pieSvg.append("g")
+      .attr("class", "pie")
+      .attr("transform", `translate(${margin*2.5}, ${margin*3})`);
+      
+    pieChart_gender.append('g')
+      .attr("class", "labels");
+    pieChart_gender.append("g")
+      .attr("class", "lines"); 
+  
+    pieChart_gender.selectAll('path')
+      .data(pie(gender))
+      .enter()
+      .append('path')
+      .attr('d', arc)
+      .attr("fill",function(d,i) {return color_gender(i);})
+  
+      pieChart_gender.append('g').classed('labels',true);
+      pieChart_gender.append('g').classed('lines',true);    
+      
+      var polyline_gender = pieChart_gender.select('.lines')
+                        .selectAll('polyline')
+                        .data(pie(gender))
+                        .enter().append('polyline')
+                        .attr('points', function(d) {
+  
+              var pos_gender = outerArc_gender.centroid(d);
+              pos_gender[0] = radius * 0.95 * (midAngle(d) < Math.PI ? 1 : -1);
+              return [arc.centroid(d), outerArc_gender.centroid(d), pos_gender]
+          });
+      
+      pieChart_gender.append("g")
+      .attr("class", "pie title")
+      .append("text")
+      .attr("transform", "translate(" + (-40) + "," + (-100) + ")")
+      .text("Gender Breakdown")
+      .attr('font-family', 'tahoma')
+      .attr('font-size',12);
+  
+      label_gender = pieChart_gender.select('.labels').selectAll('text')
+                  .data(pie(gender))  
+                  .enter().append('text')
+                  .attr('dy', '.35em')
+                  .html(function(d) {
+                      return d.data.key;
+                  })
+                  .attr('transform', function(d) {
+                      var pos_gender = outerArc_gender.centroid(d);
+                      pos_gender[0] = radius * 0.95 * (midAngle(d) < Math.PI ? 1 : -1);
+                      return 'translate(' + pos_gender + ')';
+                  })
+                  .style('text-anchor', function(d) {
+                      return (midAngle(d)) < Math.PI ? 'start' : 'end';
+                  })
+                  .attr('font-size',10);
+  
+      // RACE BREAKDOWN
+  
+      pieChart_race = pieSvg.append("g")
+      .attr("class", "pie")
+      .attr("transform", `translate(${margin*2.5}, ${margin*8})`);
+      
+      pieChart_race.append('g')
+      .attr("class", "labels");
+      pieChart_race.append("g")
+      .attr("class", "lines"); 
+  
+      pieChart_race.selectAll('path')
+      .data(pie(race))
+      .enter()
+      .append('path')
+      .attr('d', arc)
+      .attr("fill",function(d,i) {return color_race(i);})
+  
+      pieChart_race.append('g').classed('labels',true);
+      pieChart_race.append('g').classed('lines',true);    
+      
+      var outerArc_race = d3.arc()
+          .outerRadius(radius * 1.2)
+          .innerRadius(radius * 1.2);
+  
+      var polyline_race = pieChart_race.select('.lines')
+                        .selectAll('polyline')
+                        .data(pie(race))
+                        .enter().append('polyline')
+                        .attr('points', function(d) {
+  
+              var pos_race = outerArc_race.centroid(d);
+              pos_race[0] = radius * 1.1 * (midAngle(d) < Math.PI ? 1 : -1);
+              return [arc.centroid(d), outerArc_race.centroid(d), pos_race]
+          });
+      
+          pieChart_race.append("g")
+      .attr("class", "pie title")
+      .append("text")
+      .attr("transform", "translate(" + (-40) + "," + (-110) + ")")
+//      .attr("transform", "translate(" + -(pieChartsWidth/1.8) + "," + (-pieChartsHeight/1.5) + ")")
+      .text("Race Breakdown")
+      .attr('font-family', 'tahoma')
+      .attr('font-size',12);
+  
+      pieChart_race = pieChart_race.select('.labels').selectAll('text')
+                  .data(pie(race))  
+                  .enter().append('text')
+                  .attr('dy', '.35em')
+                  .html(function(d) {
+                      return d.data.key;
+                  })
+                  .attr('transform', function(d) {
+                      var pos = outerArc_race.centroid(d);
+                      pos[0] = radius * 1.1 * (midAngle(d) < Math.PI ? 1 : -1);
+                      return 'translate(' + pos + ')';
+                  })
+                  .style('text-anchor', function(d) {
+                      return (midAngle(d)) < Math.PI ? 'start' : 'end';
+                  })
+                  .attr('font-size',10);
+  
+  
+    }
+  
+    else if (mouse === "off") {
+      d3.selectAll(".pie")
+        .transition()
+        .duration(1)
+        .attr('opacity',0)
+        .remove();
+    }
+
+    //makebarChart(nested_data,config);
+
+    // //console.log(Configuration)
+    // document.getElementById("Intake").addEventListener('click', function(event) {
+    //     dataset = allData[0];
+    //     config = Configuration["Intake"]
+    //     nested_data = nested(dataset,config)
+
+    //     makebarChart(nested_data,config);
+        
+    //   })
+
+    //   document.getElementById("Disposition").addEventListener('click', function(event) {
+    //     dataset = allData[1];
+    //     config = Configuration["Disposition"]
+    //     //console.log(dataset)
+    //     //console.log(config)
+
+    //     nested_data = nested(dataset,config)
+
+    //     makebarChart(nested_data,config);
+        
+    //   })
+    //   document.getElementById("Sentence").addEventListener('click', function(event) {
+    //     dataset = allData[2];
+    //     config = Configuration["Sentence"]
+    //     //console.log(dataset)
+    //     //console.log(config)
+
+    //     nested_data = nested(dataset,config)
+
+    //     makebarChart(nested_data,config);
+        
+    //   })
+
+
+
+
+
+      // Make buttons
+        button_width = 100
+        button_height = 50
+        buttonOpacity = 0.5
+        buttonOpacityHover = 0.9
+
+        IntakeSvg = d3.select("#Intake")
+            .append("svg")
+            .attr("width", (button_width+margin)+"px")
+            .attr("height", (button_height+margin)+"px")
+            .attr("transform", `translate(${margin}, ${margin})`)
+            .append('g')
+            // .attr("transform", `translate(${margin}, ${margin})`);
+
+        IntakeSvg.append("rect")
+            .attr("class", "rect")
+            .attr("width", button_width)
+            .attr("height", button_height)
+            .attr("fill", "#107386")
+            .attr("opacity",buttonOpacity)
+            // .on("mouseover", function(d) {
+            //     d3.select(this)
+            //     .style('opacity', buttonOpacityHover)
+
+            // })
+            // .on("mouseout", function(d) {
+            //     d3.select(this)
+            //     .style('opacity', buttonOpacity)
+
+            // })
+
+        IntakeSvg.append("text")
+            .text("Intake")
+            .attr("transform", "translate(" + (button_width/2) + "," + (button_height/2) + ")")
+            .attr("text-anchor", "middle")
+            .style('fill',"black")
+            .attr('font-size',12);
 
 }
 
@@ -262,7 +805,8 @@ function nested(dataset,config) {
           });
         //console.log(nested_total);
         return nested_total;
-};
+    };
+}
 
 // make initial chart
 function makebarChart(data, config) {
