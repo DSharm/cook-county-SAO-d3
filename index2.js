@@ -61,6 +61,10 @@ Promise.all([
 //   })
 });
 
+button_width = 100
+button_height = 50
+buttonOpacity = 0.5
+buttonOpacityHover = 0.9
 
 
 dispSvg = d3.select("#Disposition")
@@ -197,10 +201,7 @@ function makeVis2(allData,Configuration) {
         .append('g')
         .attr("transform", `translate(${margin}, ${margin})`);
 
-        button_width = 100
-        button_height = 50
-        buttonOpacity = 0.5
-        buttonOpacityHover = 0.9
+        
 
         DispSvg = d3.select("#Intake")
         .append("svg")
