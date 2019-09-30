@@ -61,6 +61,8 @@ Promise.all([
 //   })
 });
 
+
+
 button_width = 100
 button_height = 50
 buttonOpacity = 0.5
@@ -164,6 +166,41 @@ var key = function(d) {
     return d.key;
 };
 
+function makeVis2(allData,Configuration) {
+    // console.log(Configuration)
+    document.getElementById("Intake").addEventListener('click', function(event) {
+        dataset = allData[0];
+        config = Configuration["Intake"]
+        nested_data = nested(dataset,config)
+
+        makelineChart(nested_data,config);
+        
+      })
+
+      document.getElementById("Disposition").addEventListener('click', function(event) {
+        dataset = allData[1];
+        config = Configuration["Disposition"]
+        //console.log(dataset)
+        //console.log(config)
+
+        nested_data = nested(dataset,config)
+
+        makelineChart(nested_data,config);
+        
+      })
+      document.getElementById("Sentence").addEventListener('click', function(event) {
+        dataset = allData[2];
+        config = Configuration["Sentence"]
+        //console.log(dataset)
+        //console.log(config)
+
+        nested_data = nested(dataset,config)
+
+        makelineChart(nested_data,config);
+        
+      })
+    }
+
 // Function to nest the data and then create Race/Gender arrays
 function nested(dataset,config) {
     nested_total = d3.nest()
@@ -252,7 +289,7 @@ function removeLineChart() {
 }
 
 
-  function makebarChart(data, config) {
+  function makelineChart(data, config) {
     //     console.log(config["name"]);
     //     figureID = config["name"];
     //   var parentElement = d3.select("#" + figureID );
@@ -326,7 +363,7 @@ function removeLineChart() {
     
       //console.log(data);
     lineGroups = lines.selectAll('.line-group')
-      .data(data).enter()
+      .data(data,key).enter()
       .append('g')
       .attr('class', 'line-group')  
       .on("mouseover", function(d, i) {
@@ -402,7 +439,7 @@ function removeLineChart() {
     
     /* Add circles in the line */
    circleGroups = lines.selectAll("circle-group")
-      .data(data).enter()
+      .data(data,key).enter()
       .append("g")
       .style("fill", function(d,i) {
         if (config["name"] === "Intake") {
@@ -463,9 +500,6 @@ function removeLineChart() {
       .duration(4000)
       .style('opacity', circleOpacity)
       
-
-    
-    
     /* Add Axis into SVG */
     var xAxis = d3.axisBottom(xScale).ticks(10);
     var yAxis = d3.axisLeft(yScale).ticks(12);
@@ -532,7 +566,7 @@ function removeLineChart() {
         .attr('font-size',12); 
 
     svg.append("text")
-        .attr("transform","translate(" + width/2 + "," + (-10) +")")
+        .attr("transform","translate(" + width/2 + "," + (-30) +")")
         .text(config["title"])
         .attr("text-anchor","middle")
         .attr('font-family', 'tahoma')
@@ -541,7 +575,7 @@ function removeLineChart() {
       
   };
 
-  function click(d,firstPie){  // utility function to be called on mouseover.
+function click(d,firstPie){  // utility function to be called on mouseover.
     d3.selectAll(".pie")
     .transition()
     .duration(1)
@@ -563,7 +597,7 @@ function removeLineChart() {
   
   var pC = {};
   
-  pC.update = function(d,gender,race, mouse,firstPie){
+pC.update = function(d,gender,race, mouse,firstPie){
   
     if (mouse === "on") {
   
@@ -635,8 +669,8 @@ function removeLineChart() {
         pieSvg.select(".pie-text").remove();
       })
 
-    console.log(d)
-    console.log(gender)
+    // console.log(d)
+    // console.log(gender)
   
       pieChart_gender.append('g').classed('labels',true);
       pieChart_gender.append('g').classed('lines',true);    
@@ -764,39 +798,4 @@ function removeLineChart() {
     }
   }
 
-  function makeVis2(allData,Configuration) {
-
-
-    console.log(Configuration)
-    document.getElementById("Intake").addEventListener('click', function(event) {
-        dataset = allData[0];
-        config = Configuration["Intake"]
-        nested_data = nested(dataset,config)
-
-        makebarChart(nested_data,config);
-        
-      })
-
-      document.getElementById("Disposition").addEventListener('click', function(event) {
-        dataset = allData[1];
-        config = Configuration["Disposition"]
-        //console.log(dataset)
-        //console.log(config)
-
-        nested_data = nested(dataset,config)
-
-        makebarChart(nested_data,config);
-        
-      })
-      document.getElementById("Sentence").addEventListener('click', function(event) {
-        dataset = allData[2];
-        config = Configuration["Sentence"]
-        //console.log(dataset)
-        //console.log(config)
-
-        nested_data = nested(dataset,config)
-
-        makebarChart(nested_data,config);
-        
-      })
-    } 
+ 
