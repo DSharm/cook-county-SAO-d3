@@ -331,7 +331,16 @@ function removeLineChart() {
       .attr('class', 'line-group')  
       .on("mouseover", function(d, i) {
           //console.log(d)
-    
+          if (config["name"] === "Intake") {
+            color = intakeColor;
+          }
+          else if (config["name"] === "Disposition") {
+            color = dispositionColor;
+          }
+          else if (config["name"] === "Sentence") {
+            color = sentColor;
+          }
+
           svg.append("text")
             .attr("class", "title-text")
             .style("fill", color(i))        
@@ -344,10 +353,20 @@ function removeLineChart() {
           svg.select(".title-text").remove();
         })
     
-path = lineGroups.append('path')
+    path = lineGroups.append('path')
       .attr('class', 'line')  
       .attr('d', d => line(d.values))
-      .style('stroke', (d, i) => color(i))
+      .style('stroke', function(d,i) {
+        if (config["name"] === "Intake") {
+            return intakeColor(i)
+          }
+          else if (config["name"] === "Disposition") {
+            return dispositionColor(i);
+          }
+          else if (config["name"] === "Sentence") {
+            return sentColor(i);
+          }
+      })
       .style('opacity', lineOpacity)
       .on("mouseover", function(d) {
           d3.selectAll('.line')
@@ -385,7 +404,17 @@ path = lineGroups.append('path')
    circleGroups = lines.selectAll("circle-group")
       .data(data).enter()
       .append("g")
-      .style("fill", (d, i) => color(i))
+      .style("fill", function(d,i) {
+        if (config["name"] === "Intake") {
+            return intakeColor(i)
+          }
+          else if (config["name"] === "Disposition") {
+            return dispositionColor(i);
+          }
+          else if (config["name"] === "Sentence") {
+            return sentColor(i);
+          }
+      })
 
     circle = circleGroups
       .selectAll("circle")
@@ -451,11 +480,63 @@ path = lineGroups.append('path')
       .call(yAxis)
       .append('text')
       //.attr("y", 15)
-      .attr('x', 40)
+      .attr('x', 50)
       .attr("transform", "rotate(-90)")
       .attr("fill", "#000")
       .text("Total cases");
     
+    console.log(data);
+    var results = []
+
+    data.forEach(function(d) {
+        results.push(d.key)
+    })
+    console.log(results)
+
+    // https://bl.ocks.org/bricedev/0d95074b6d83a77dc3ad
+    legend = svg.selectAll(".legend")
+        .data(results)
+        .enter().append("g")
+        .attr("class", "legend")
+        .attr("transform", function(d,i) { return "translate(0," + i*20 + ")"; })
+       .style("opacity","1");
+    
+    legend.append("rect")
+      .attr("x", width - 10)
+      .attr("width", 10)
+      .attr("height", 18)
+      .style("fill", function(d) { 
+        if (config["name"] === "Intake") {
+          return intakeColor(d)
+        }
+        else if (config["name"] === "Disposition") {
+          return dispositionColor(d);
+        }
+        else if (config["name"] === "Sentence") {
+          return sentColor(d);
+        }
+      });
+    
+    legend.append("text")
+      .attr("x", width - 15)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .style("text-anchor", "end")
+      .attr("font-size",10)
+      .text(function(d) {return d; });
+    
+    svg.append("text")
+        .attr("transform","translate(" + 0 + "," + (height-10) +")")
+        .text("Source: Cook County State Attorney's Office Data Portal")
+        .attr('font-family', 'tahoma')
+        .attr('font-size',12); 
+
+    svg.append("text")
+        .attr("transform","translate(" + width/2 + "," + (-10) +")")
+        .text(config["title"])
+        .attr("text-anchor","middle")
+        .attr('font-family', 'tahoma')
+        .attr('font-size',14);
     
       
   };
