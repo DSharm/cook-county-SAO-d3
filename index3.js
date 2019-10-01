@@ -178,20 +178,31 @@ function makeVis2(allData,Configuration) {
         config = Configuration["Intake"]
         nested_data = nested(dataset,config)
 
-        d3.select("#text-exp")
-          .remove()
+        d3.select("#g-exp")
+        .remove()
 
-        d3.select("#Explanation") 
-          .append('text')
-          .attr('id',"text-exp")
-          .attr("transform","translate(" + 0 + "," + 50 +")")
-          .text(config["explanation"])
-          .style('opacity',0)
+      text = d3.select("#Explanation") 
+        .append('g')
+        .attr('id','g-exp')
+        .style('opacity',0)
 
-          d3.select("#text-exp")
-          .transition()
-          .duration(2000)
-          .style("opacity",1)
+        text
+        .append('text')
+        .attr('class',"text-exp")
+        .attr("transform","translate(" + 0 + "," + 15 +")")
+        .text(config["explanation"])
+
+        text
+        .append('text')
+        .attr('class',"text-exp")
+        .attr("transform","translate(" + 0 + "," + 30 +")")
+        .text(config["explanation2"])
+
+
+        d3.select("#g-exp")
+        .transition()
+        .duration(2000)
+        .style("opacity",1)
           
 
         makelineChart(nested_data,config);
@@ -206,20 +217,31 @@ function makeVis2(allData,Configuration) {
 
         nested_data = nested(dataset,config)
 
-        d3.select("#text-exp")
-          .remove()
-          
-        d3.select("#Explanation") 
-          .append('text')
-          .attr('id',"text-exp")
-          .attr("transform","translate(" + 0 + "," + 50 +")")
-          .text(config["explanation"])
-          .style('opacity',0)
+        d3.select("#g-exp")
+        .remove()
 
-          d3.select("#text-exp")
-          .transition()
-          .duration(2000)
-          .style("opacity",1)
+      text = d3.select("#Explanation") 
+        .append('g')
+        .attr('id','g-exp')
+        .style('opacity',0)
+
+        text
+        .append('text')
+        .attr('class',"text-exp")
+        .attr("transform","translate(" + 0 + "," + 15 +")")
+        .text(config["explanation"])
+
+        text
+        .append('text')
+        .attr('class',"text-exp")
+        .attr("transform","translate(" + 0 + "," + 30 +")")
+        .text(config["explanation2"])
+
+
+        d3.select("#g-exp")
+        .transition()
+        .duration(2000)
+        .style("opacity",1)
 
         makelineChart(nested_data,config);
         
@@ -232,7 +254,7 @@ function makeVis2(allData,Configuration) {
 
         nested_data = nested(dataset,config)
 
-        d3.select("#text-exp")
+        d3.select("#g-exp")
           .remove()
 
         text = d3.select("#Explanation") 
