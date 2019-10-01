@@ -23,6 +23,11 @@ h1 {
   font-family: "tahoma";
   font-weight: bold;
 }
+h2 {
+  font-size: 8px;
+  font-family: "tahoma";
+  font-weight: bold;
+}
 
 .pie-text {
   font-size: 8;
@@ -57,13 +62,21 @@ h1 {
   display:flex;
   padding-left: 50px;
   padding-right: 25px;
-  padding-top: 0px;
+  padding-top: 10px;
   /* justify-content: center; */
   
   /* margin: 25px auto 25px auto;
   padding: 50px 50px 50px 50px;
   background-color: white;
   box-shadow: 0 0 20px #ccc; */
+}
+
+.row-header{
+  display:flex;
+  padding-left: 50px;
+  padding-right: 25px;
+  padding-top: 25px;
+  justify-content: center;
 }
 
 #slider-time {
@@ -76,8 +89,9 @@ h1 {
 
 #Buttons{
   justify-content: center;
-  padding-bottom: 25px;
+  padding-bottom: 20px;
 }
+
 /* #header{
   background-color: gray;
 } */
@@ -87,7 +101,26 @@ p {
   font-size: 14px;
   line-height: 18px;
 }
+.explanation {
+  margin-bottom: 0px;
+}
 
+#IntakeExplanation {
+  opacity: 0;
+}
+
+#DispositionExplanation {
+  opacity: 0;
+}
+
+#SentenceExplanation {
+  opacity: 0;
+}
+
+#Explanation {
+  display:flex;
+  box-align: center;
+}
 
 #footer {
   background-color: #f7f7f7;

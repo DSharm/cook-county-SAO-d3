@@ -26,7 +26,7 @@ var CIRCLE_DURATION = 3000;
 
 // Set colors for pie charts   
 var intakeColor = d3.scaleOrdinal()
-  .range(["#107386", "#CF1264", "#681E70", "#ff8c00","#00ffc8"]);
+  .range(["#107386", "#CF1264", "#681E70", "#ff8c00","#2965E6"]);
 
 var dispositionColor = d3.scaleOrdinal()
   .range(["#107386", "#CF1264"]);
@@ -66,16 +66,17 @@ Promise.all([
 
 
 button_width = 100
-button_height = 50
+button_height = 40
 buttonOpacity = 0.5
 buttonOpacityHover = 0.9
 
 IntakeSvg = d3.select("#Intake")
     .append("svg")
     .attr("width", (button_width+margin)+"px")
-    .attr("height", (button_height+margin)+"px")
+    .attr("height", (button_height)+"px")
     .append('g')
-    .attr("transform", `translate(${margin}, ${margin})`);
+    // .attr("transform", `translate(${margin}, ${margin})`);
+    .attr("transform", 'translate(0,0)')
 
 IntakeSvg.append("rect")
     .attr("class", "rect")
@@ -104,9 +105,10 @@ IntakeSvg.append("text")
 dispSvg = d3.select("#Disposition")
     .append("svg")
     .attr("width", (button_width+margin)+"px")
-    .attr("height", (button_height+margin)+"px")
+    .attr("height", (button_height)+"px")
     .append('g')
-    .attr("transform", `translate(${margin}, ${margin})`);
+    // .attr("transform", `translate(${margin}, ${margin})`);
+    .attr("transform", 'translate(0,0)')
 
 dispSvg.append("rect")
     .attr("class", "rect")
@@ -135,9 +137,10 @@ dispSvg.append("text")
 sentSvg = d3.select("#Sentence")
     .append("svg")
     .attr("width", (button_width+margin)+"px")
-    .attr("height", (button_height+margin)+"px")
+    .attr("height", (button_height)+"px")
     .append('g')
-    .attr("transform", `translate(${margin}, ${margin})`);
+    .attr("transform", 'translate(0,0)')
+    // .attr("transform", `translate(${margin}, ${margin})`);
 
 sentSvg.append("rect")
     .attr("class", "rect")
@@ -175,6 +178,22 @@ function makeVis2(allData,Configuration) {
         config = Configuration["Intake"]
         nested_data = nested(dataset,config)
 
+        d3.select("#text-exp")
+          .remove()
+
+        d3.select("#Explanation") 
+          .append('text')
+          .attr('id',"text-exp")
+          .attr("transform","translate(" + 0 + "," + 50 +")")
+          .text(config["explanation"])
+          .style('opacity',0)
+
+          d3.select("#text-exp")
+          .transition()
+          .duration(2000)
+          .style("opacity",1)
+          
+
         makelineChart(nested_data,config);
         
       })
@@ -187,6 +206,21 @@ function makeVis2(allData,Configuration) {
 
         nested_data = nested(dataset,config)
 
+        d3.select("#text-exp")
+          .remove()
+          
+        d3.select("#Explanation") 
+          .append('text')
+          .attr('id',"text-exp")
+          .attr("transform","translate(" + 0 + "," + 50 +")")
+          .text(config["explanation"])
+          .style('opacity',0)
+
+          d3.select("#text-exp")
+          .transition()
+          .duration(2000)
+          .style("opacity",1)
+
         makelineChart(nested_data,config);
         
       })
@@ -197,6 +231,32 @@ function makeVis2(allData,Configuration) {
         //console.log(config)
 
         nested_data = nested(dataset,config)
+
+        d3.select("#text-exp")
+          .remove()
+
+        text = d3.select("#Explanation") 
+          .append('g')
+          .attr('id','g-exp')
+          .style('opacity',0)
+
+          text
+          .append('text')
+          .attr('class',"text-exp")
+          .attr("transform","translate(" + 0 + "," + 15 +")")
+          .text(config["explanation"])
+
+          text
+          .append('text')
+          .attr('class',"text-exp")
+          .attr("transform","translate(" + 0 + "," + 30 +")")
+          .text(config["explanation2"])
+
+
+          d3.select("#g-exp")
+          .transition()
+          .duration(2000)
+          .style("opacity",1)
 
         makelineChart(nested_data,config);
         
@@ -353,8 +413,14 @@ function removeLineChart() {
     
     parentElement = createParentElem()
     svg = makeSvg(parentElement,300)
-    console.log(svg)
-
+    // console.log(svg)
+    // svg.append("text")
+    //   .attr()
+    // svg.append("text")
+    //   .attr("transform","translate(" + (-350) + "," + (0) +")")
+    //   .text("Source: Cook County State Attorney's Office Data Portal")
+    //   .attr('font-family', 'tahoma')
+    //   .attr('font-size',12); 
     // parentElement = makeSvg(100).parentElement
 
     // console.log(svg.parentElement)
