@@ -24,6 +24,10 @@ h1 {
   font-weight: bold;
 }
 
+.pie-text {
+  font-size: 8;
+}
+
 /* h2 {
   display: flex;
   justify-content: center;
@@ -69,6 +73,12 @@ ul li{
   justify-content: start;
  
 } */
+
+#pieSvg {
+  top: 200; 
+  left: 200;
+  position:'absolute';
+}
 
 .container {
   display: flex;
@@ -168,4 +178,5 @@ canvas {
   stroke-width: 4;
   fill: none;
 }
+
 

@@ -1,4 +1,5 @@
-var margin_sankey = {top: 40,right: 40,bottom: 25,left: 40};
+// var margin_sankey = {top: 40,right: 40,bottom: 25,left: 40};
+var margin_sankey = 50;
 var width_sankey = 900;
 var height_sankey = 450;
 // var barChartWidth = width - margin.right;
@@ -20,7 +21,7 @@ var graph;
 
 var sankey = d3.sankey().nodeWidth(20)
 .nodePadding(50)
-.size([(width_sankey-margin_sankey.right), height_sankey]);
+.size([(width_sankey-margin_sankey), height_sankey]);
 
 freqCounter =1;
 
@@ -42,12 +43,14 @@ function make_sankey(data, year) {
 
 
     const svg = d3.select(".sankey")
-    .append('div')
-    .attr('id',"Sankey")
     .append('svg')
-      .style("background", "#fff")
-      .attr("width", width_sankey)
-      .attr("height", height_sankey);
+    .attr('id',"Sankey")
+    .style("background", "#fff")
+    .attr("width", (width_sankey+margin_sankey)+"px")
+    .attr("height", (height_sankey+margin_sankey)+"px")
+    .append('g')
+    .attr("transform","translate(30,30)")
+    
       
     // const svg = d3.select("#Sankey")
     //   .append('svg')
@@ -120,7 +123,7 @@ function make_sankey(data, year) {
             nodes: graph.nodes.map(d => Object.assign({}, d)),
             links: graph.links.map(d => Object.assign({}, d))
         });
-        //console.log(nodes);
+        console.log(nodes);
     
     // links[1].source.x0 = 200;
     // links[1].source.x1 = 210;
@@ -215,6 +218,7 @@ function make_sankey(data, year) {
         .append("title")
         .text(d => `${d.name}\n${d.value.toLocaleString()}`);
         
+        //console.log(nodes)
 
         // function dragmove(d) {
         //     d3.select(this)

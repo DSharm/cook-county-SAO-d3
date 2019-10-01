@@ -3,7 +3,7 @@
 
 var width = 550;
 var height = 500;
-var margin = 50;
+var margin = 70;
 
 var pieChartsWidth = 0.6 * width;
 var pieChartsHeight = height;
@@ -21,6 +21,8 @@ var circleOpacityOnLineHover = "0.25"
 var circleRadius = 6;
 var circleRadiusHover = 8;
 
+var UNROLL_DURATION = 2000;
+var CIRCLE_DURATION = 3000;
 
 // Set colors for pie charts   
 var intakeColor = d3.scaleOrdinal()
@@ -268,12 +270,12 @@ function nested(dataset,config) {
 
   function makeSvg(parentElement,moveChart) {
     
-        var svg = parentElement.append("svg").attr("id", "line-chart")
-      .attr("width", (width+margin+400)+"px")
+      var svg = parentElement.append("svg").attr("id", "line-chart")
+      .attr("width", (width+margin+250)+"px")
       .attr("height", (height+margin)+"px")
       .append("g")
       .attr("id", 'line-chart-g')
-      .attr("transform", 'translate('  + moveChart + "," + 50 + ")");
+      .attr("transform", 'translate('  + moveChart + "," + margin + ")");
 
       return svg
   }
@@ -282,9 +284,13 @@ function removeLineChart() {
     d3.select("#line-chart-g")
         .transition()
         .duration(1000)
-        .attr("transform",'translate('  + 50 + "," + 50 + ")")
+        .attr("transform",'translate('  + 50 + "," + margin + ")")
+        
     d3.select("#line-chart")
-        .attr('width',(width+margin)+"px")
+        .attr('width',(width+margin+250)+"px")
+        .transition()
+        .duration(800)
+        .attr('width',(width+margin+200)+"px")
 
 }
 
@@ -347,7 +353,7 @@ function removeLineChart() {
     //   .attr("transform", 'translate('  + 100 + "," + 50 + ")");
     
     parentElement = createParentElem()
-    svg = makeSvg(parentElement,200)
+    svg = makeSvg(parentElement,300)
     console.log(svg)
 
     // parentElement = makeSvg(100).parentElement
@@ -433,7 +439,7 @@ function removeLineChart() {
             .attr("stroke-dasharray", totalLength + " " + totalLength)
             .attr("stroke-dashoffset", totalLength)
           .transition() // Call Transition Method
-            .duration(4000) // Set Duration timing (ms)
+            .duration(UNROLL_DURATION) // Set Duration timing (ms)
             //.ease(d3.easeLinear) // Set Easing option
             .attr("stroke-dashoffset", 0); // Set final value of dash-offset for transition
     
@@ -497,7 +503,7 @@ function removeLineChart() {
           })
     .style('opacity', 0)
       .transition()
-      .duration(4000)
+      .duration(CIRCLE_DURATION)
       .style('opacity', circleOpacity)
       
     /* Add Axis into SVG */
@@ -619,16 +625,21 @@ pC.update = function(d,gender,race, mouse,firstPie){
     
     // referenced https://bl.ocks.org/laxmikanta415/dc33fe11344bf5568918ba690743e06f  
     // GENDER BREAKDOWN
-    gender_chart_x = pieChartsWidth * 5 + margin.left;  
+    // gender_chart_x = pieChartsWidth * 5 + margin.left;  
+
   
     pieSvg = parentElement.append('svg')
-                        .attr("width", pieChartsWidth )
-                        .attr("height",pieChartsHeight)
-                        .attr("class", "pie");
+                        .attr("width", (pieChartsWidth)+"px" )
+                        .attr("height",(pieChartsHeight)+"px")
+                        .attr("class", "pie")
+                        .attr("id","pieSvg")
+                        // .append('g')
+                        // .attr('transform','translate(150,0)')
+
     
-    var div = pieSvg.append('div')
-    .attr("class", "tooltip")				
-    .style("opacity", 0);
+    // var div = pieSvg.append('div')
+    // .attr("class", "tooltip")				
+    // .style("opacity", 0);
 
     if (firstPie===1) {
         d3.selectAll(".pie")
@@ -642,7 +653,7 @@ pC.update = function(d,gender,race, mouse,firstPie){
 
     pieChart_gender = pieSvg.append("g")
       .attr("class", "pie")
-      .attr("transform", `translate(${margin*2.5}, ${margin*3})`);
+      .attr("transform", `translate(${margin*1.7}, ${margin*2})`);
       
     pieChart_gender.append('g')
       .attr("class", "labels");
@@ -662,8 +673,8 @@ pC.update = function(d,gender,race, mouse,firstPie){
           .style("fill", color_gender(i))        
           .text(d.data.key + ":" + d.data.value)
           .attr("text-anchor", "middle")
-          .attr("x", (margin*2.5))
-          .attr("y", (margin*3)-5);
+          .attr("x", (margin*1.7))
+          .attr("y", (margin*2)-5);
       })
     .on("mouseout", function(d) {
         pieSvg.select(".pie-text").remove();
@@ -715,7 +726,7 @@ pC.update = function(d,gender,race, mouse,firstPie){
   
       pieChart_race = pieSvg.append("g")
       .attr("class", "pie")
-      .attr("transform", `translate(${margin*2.5}, ${margin*8})`);
+      .attr("transform", `translate(${margin*1.7}, ${margin*5.5})`);
       
       pieChart_race.append('g')
       .attr("class", "labels");
@@ -735,8 +746,8 @@ pC.update = function(d,gender,race, mouse,firstPie){
           .style("fill", color_race(i))        
           .text(d.data.key + ":" + d.data.value)
           .attr("text-anchor", "middle")
-          .attr("x", (margin*2.5))
-          .attr("y", (margin*8)-5);
+          .attr("x", (margin*1.7))
+          .attr("y", (margin*5.5)-5);
       })
     .on("mouseout", function(d) {
         pieSvg.select(".pie-text").remove();
