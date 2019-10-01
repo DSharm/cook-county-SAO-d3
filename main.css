@@ -8,12 +8,12 @@ body {
 body {
   background-color: #eee;
 }
-.Heading {
+/* .Heading {
   display: flex;
   align-content: center;
   justify-content: center;
   padding:25px;
-}
+} */
 
 h1 {
   margin-bottom: 25px;
@@ -34,18 +34,53 @@ h1 {
   font-family: "tahoma"
 } */
 
+
 /* Adapted from Scott Murray's Chapter 16 example */
-#container {
+/* #container {
   width: 1300px;
   margin: 25px auto 25px auto;
   padding: 50px 50px 50px 50px;
   background-color: white;
   box-shadow: 0 0 20px #ccc;
+} */
+
+#container {
+  padding: 50px 50px 50px 50px;
+  margin: 50px 50px 50px 50px;
+  background-color: white;
+  box-shadow: 0 0 20px #ccc;
+
 }
 
-#header{
-  background-color: gray;
+.row {
+  /* width: 1300px; */
+  display:flex;
+  padding-left: 50px;
+  padding-right: 25px;
+  padding-top: 0px;
+  /* justify-content: center; */
+  
+  /* margin: 25px auto 25px auto;
+  padding: 50px 50px 50px 50px;
+  background-color: white;
+  box-shadow: 0 0 20px #ccc; */
 }
+
+#slider-time {
+  justify-content: center;
+}
+
+#sankey{
+  justify-content: center;
+}
+
+#Buttons{
+  justify-content: center;
+  padding-bottom: 25px;
+}
+/* #header{
+  background-color: gray;
+} */
 
 p {
   margin-bottom: 25px;
@@ -53,8 +88,21 @@ p {
   line-height: 18px;
 }
 
+
+#footer {
+  background-color: #f7f7f7;
+  position: relative;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   color: black;
+   font-size: 11px;
+   padding-top:5px;
+   padding-bottom: 10px;
+}
+
 /* adapted from https://github.com/UrbanInstitute/state-economic-monitor  */
-ul li{
+/* ul li{
   border: 3px solid rgb(160, 12, 12);
   display: inline-block;
   min-width: 200px;
@@ -62,7 +110,7 @@ ul li{
   display: inline-block;
   padding:10px;
   color:rgb(160, 12, 12);
-}
+} */
 
 /* .first,
 .second {
@@ -74,21 +122,21 @@ ul li{
  
 } */
 
-#pieSvg {
+/* #pieSvg {
   top: 200; 
   left: 200;
   position:'absolute';
-}
+} */
 
-.container {
+/* .container {
   display: flex;
   /* justify-content: center */
-}
+/*} */
 
-.Buttons {
+/* .Buttons {
   display: flex;
   justify-content: center;
-}
+} */
 
 rect:hover {
   opacity: 0.9;

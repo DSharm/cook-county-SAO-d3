@@ -287,9 +287,8 @@ function removeLineChart() {
         .attr("transform",'translate('  + 50 + "," + margin + ")")
         
     d3.select("#line-chart")
-        .attr('width',(width+margin+250)+"px")
         .transition()
-        .duration(800)
+        .duration(1000)
         .attr('width',(width+margin+200)+"px")
 
 }

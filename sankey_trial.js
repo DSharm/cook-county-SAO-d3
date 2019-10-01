@@ -8,7 +8,7 @@ var height_sankey = 450;
 // var pieChartsHeight = 0.5 * barChartHeight;
 
 // https://observablehq.com/@mbostock/flow-o-matic
-var starting_year = "2019";
+var starting_year = "2018";
 
 var formatNumber = d3.format(",.0f"),
     format = function(d) { return formatNumber(d) + " TWh"; },
@@ -42,7 +42,7 @@ function make_sankey(data, year) {
     //console.log(data_nested);
 
 
-    const svg = d3.select(".sankey")
+    const svg = d3.select("#sankey")
     .append('svg')
     .attr('id',"Sankey")
     .style("background", "#fff")
@@ -376,7 +376,7 @@ var dataTime = d3.range(0, 9).map(function(d) {
     .width(300)
     .tickFormat(d3.timeFormat('%Y'))
     .tickValues(dataTime)
-    .default(new Date(2019, 10, 3))
+    .default(new Date(2018, 10, 3))
     .on('onchange', function(val) {
         //console.log(d3.timeFormat('%Y')(val));
         year = d3.timeFormat('%Y')(val);
@@ -394,7 +394,7 @@ var dataTime = d3.range(0, 9).map(function(d) {
   var gTime = d3
     .select('div#slider-time')
     .append('svg')
-    .attr('width', 500)
+    .attr('width', 350)
     .attr('height', 100)
     .append('g')
     .attr('transform', 'translate(30,30)');

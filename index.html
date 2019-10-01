@@ -7,7 +7,7 @@
 </head>
 <body>
   <div id=container>
-    <div id="Header">
+    <div class="row">
       <div>
         <h1> Cook County State Attorney's Office - Interactive Dashboard</h1>
       </div>
@@ -17,83 +17,36 @@
 
       <div>
         <h2> Dashboard </h2>
-          <p> .</p>
+          <p> The purpose of this dashboard is to allow viewers to explore the SAO datasets - specifically the Intake, Dispositions, and Sentencing Datasets. The flow diagram below shows the life cycle of cases and their outcomes in each year. The slider can be used to change the year the cases were initiated. The slider is set to 2018 since the data is more complete - far more cases are pending in 2019. </p>
       </div>
     </div>
 
     
-
-    <section class = "slider">
-        <div id="slider-time"></div>
+    <div >
+      <section class = "slider">
+          <div id="slider-time"></div>
       </section>
-    <div>
-
     </div>
     
-    <div class = "sankey">
+    <div class = "row" id="sankey">
+    </div>
+    
+    <div class = "row" id = "Buttons">
+            <div id = "Intake"></div>
+            <div id = "Disposition"></div>
+            <div id = "Sentence"></div>   
     </div>
 
-    <section class = Buttons>
-        <div id = "Intake"></div>
-        <div id = "Disposition"></div>
-        <div id = "Sentence"></div>
-      </section>
-    
-    <div class = "lineChart">
+    <div class = "row">
+      <div class = "lineChart">
+      </div>
+    </div>
+
+    <div class = "row" id="footer">
+          <p></p> Add footnotes</p>
     </div>
 
 </div>
-    <!-- <section class = "Heading">
-        <div >
-          <div>
-            <!-- <h2>Dataset to Explore</h2>
-          <ul>
-              <li><a href="intake.html">Intake</a></li>
-              <li><a href="disposition.html">Disposition</a></li>
-              <li><a href="sentence.html">Sentencing</a></li>
-          </ul> -->
-     <!-- </div>
-    </div>
-    </section> --> 
-
-    <!-- <canvas width="1000" height="1000" ></canvas>
-    <svg width="1000" height="1000" ></svg> -->
-
-  <!-- <div class = "column" id="Buttons">
-    <input class="button" id="Intake" type="radio" checked>
-    <label> Intake </label>
-    
-    <input class="button" id="Disposition" type="radio" >
-    <label> Disposition </label> -->
-
-<!-- Add 2 buttons -->
-<!-- <button onclick="updateLineChart(data1)">Intake</button>
-<button onclick="updateLineChart(data2)">Disposition</button> -->
-
-  <!-- <canvas width="1000" height="1000" ></canvas> -->
-
-  
-
-  <!-- <div class = Buttons>
-      <ul>
-          <li><a value="Intake" id="Intake"  >Intake</a></li>
-          <li><a value="Disposition" id="Disposition" >Disposition</a></li>
-          <li><a value="Sentence" id="Sentence"  >Sentencing</a></li>
-      </ul>
-      </div> -->
- 
-
-  <!-- <input type="radio" name="year" value="Intake" id="Intake" class="form-radio" checked>
-  <label for="Intake">Intake</label>
-
-  <input type="radio" name="year" value="Disposition" id="Disposition" class="form-radio">
-  <label for="Disposition">Disposition</label>
-  
-  <input type="radio" name="year" value="Sentence" id="Sentence" class="form-radio">
-  <label for="Sentence">Sentence</label> -->
-  
- 
- 
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
