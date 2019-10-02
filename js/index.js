@@ -495,7 +495,7 @@ function makelineChart(data, config) {
         // Set Properties of Dash Array and Dash Offset and initiate Transition
         // http://duspviz.mit.edu/d3-workshop/transitions-animation/
         path
-            .attr("stroke-dasharray", totalLength + " " + totalLength)
+            .attr("stroke-dasharray", (totalLength*2) + " " + (totalLength*2))
             .attr("stroke-dashoffset", totalLength)
           .transition() // Call Transition Method
             .duration(UNROLL_DURATION) // Set Duration timing (ms)
