@@ -29,10 +29,10 @@ var intakeColor = d3.scaleOrdinal()
   .range(["#107386", "#CF1264", "#681E70", "#ff8c00","#2965E6"]);
 
 var dispositionColor = d3.scaleOrdinal()
-  .range(["#107386", "#CF1264"]);
+  .range(["#107386", "#CF1264","#681E70"]);
 
 var sentColor = d3.scaleOrdinal()
-  .range(["#107386", "#CF1264", "#681E70", "#ff8c00"]);
+  .range(["#107386", "#CF1264", "#681E70", "#ff8c00","#2965E6"]);
 
 var color_race = d3.scaleOrdinal()
   .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
@@ -41,6 +41,11 @@ var color_gender = d3.scaleOrdinal()
   .range(["#d0743c", "#ff8c00"]);
 
 // variable = "Intake";
+//Define key function, to be used when binding data
+var key = function(d) {
+  return d.key;
+};
+
 
 // //datasetG = []
 // Load data
@@ -54,6 +59,7 @@ Promise.all([
 
     //console.log(allData)
     //console.log(Configuration.BarCharts)
+    makeButtons()
     makeVis2(allData,Configuration.BarCharts);
     
   // https://github.com/UrbanInstitute/state-economic-monitor
@@ -64,112 +70,109 @@ Promise.all([
 });
 
 
+function makeButtons() {
+  button_width = 100
+  button_height = 40
+  buttonOpacity = 0.5
+  buttonOpacityHover = 0.9
 
-button_width = 100
-button_height = 40
-buttonOpacity = 0.5
-buttonOpacityHover = 0.9
+  IntakeSvg = d3.select("#Intake")
+      .append("svg")
+      .attr("width", (button_width+margin)+"px")
+      .attr("height", (button_height)+"px")
+      .append('g')
+      // .attr("transform", `translate(${margin}, ${margin})`);
+      .attr("transform", 'translate(0,0)')
 
-IntakeSvg = d3.select("#Intake")
-    .append("svg")
-    .attr("width", (button_width+margin)+"px")
-    .attr("height", (button_height)+"px")
-    .append('g')
-    // .attr("transform", `translate(${margin}, ${margin})`);
-    .attr("transform", 'translate(0,0)')
+  IntakeSvg.append("rect")
+      .attr("class", "rect")
+      .attr("width", button_width)
+      .attr("height", button_height)
+      .attr("fill", "#107386")
+      .attr("opacity",buttonOpacity)
+      .on("mouseover", function(d) {
+          d3.select(this)
+          .style('opacity', buttonOpacityHover)
 
-IntakeSvg.append("rect")
-    .attr("class", "rect")
-    .attr("width", button_width)
-    .attr("height", button_height)
-    .attr("fill", "#107386")
-    .attr("opacity",buttonOpacity)
-    .on("mouseover", function(d) {
-        d3.select(this)
-        .style('opacity', buttonOpacityHover)
+      })
+      .on("mouseout", function(d) {
+          d3.select(this)
+          .style('opacity', buttonOpacity)
 
-    })
-    .on("mouseout", function(d) {
-        d3.select(this)
-        .style('opacity', buttonOpacity)
+      })
 
-    })
+  IntakeSvg.append("text")
+      .text("Intake")
+      .attr("transform", "translate(" + (button_width/2) + "," + (button_height/2) + ")")
+      .attr("text-anchor", "middle")
+      .style('fill',"black")
+      .attr('font-size',12);
 
-IntakeSvg.append("text")
-    .text("Intake")
-    .attr("transform", "translate(" + (button_width/2) + "," + (button_height/2) + ")")
-    .attr("text-anchor", "middle")
-    .style('fill',"black")
-    .attr('font-size',12);
+  dispSvg = d3.select("#Disposition")
+      .append("svg")
+      .attr("width", (button_width+margin)+"px")
+      .attr("height", (button_height)+"px")
+      .append('g')
+      // .attr("transform", `translate(${margin}, ${margin})`);
+      .attr("transform", 'translate(0,0)')
 
-dispSvg = d3.select("#Disposition")
-    .append("svg")
-    .attr("width", (button_width+margin)+"px")
-    .attr("height", (button_height)+"px")
-    .append('g')
-    // .attr("transform", `translate(${margin}, ${margin})`);
-    .attr("transform", 'translate(0,0)')
+  dispSvg.append("rect")
+      .attr("class", "rect")
+      .attr("width", button_width)
+      .attr("height", button_height)
+      .attr("fill", "#CF1264")
+      .attr("opacity",buttonOpacity)
+      .on("mouseover", function(d) {
+          d3.select(this)
+          .style('opacity', buttonOpacityHover)
 
-dispSvg.append("rect")
-    .attr("class", "rect")
-    .attr("width", button_width)
-    .attr("height", button_height)
-    .attr("fill", "#CF1264")
-    .attr("opacity",buttonOpacity)
-    .on("mouseover", function(d) {
-        d3.select(this)
-        .style('opacity', buttonOpacityHover)
+      })
+      .on("mouseout", function(d) {
+          d3.select(this)
+          .style('opacity', buttonOpacity)
 
-    })
-    .on("mouseout", function(d) {
-        d3.select(this)
-        .style('opacity', buttonOpacity)
+      })
 
-    })
+  dispSvg.append("text")
+      .text("Disposition")
+      .attr("transform", "translate(" + (button_width/2) + "," + (button_height/2) + ")")
+      .attr("text-anchor", "middle")
+      .style('fill',"black")
+      .attr('font-size',12);
 
-dispSvg.append("text")
-    .text("Disposition")
-    .attr("transform", "translate(" + (button_width/2) + "," + (button_height/2) + ")")
-    .attr("text-anchor", "middle")
-    .style('fill',"black")
-    .attr('font-size',12);
+  sentSvg = d3.select("#Sentence")
+      .append("svg")
+      .attr("width", (button_width+margin)+"px")
+      .attr("height", (button_height)+"px")
+      .append('g')
+      .attr("transform", 'translate(0,0)')
+      // .attr("transform", `translate(${margin}, ${margin})`);
 
-sentSvg = d3.select("#Sentence")
-    .append("svg")
-    .attr("width", (button_width+margin)+"px")
-    .attr("height", (button_height)+"px")
-    .append('g')
-    .attr("transform", 'translate(0,0)')
-    // .attr("transform", `translate(${margin}, ${margin})`);
+  sentSvg.append("rect")
+      .attr("class", "rect")
+      .attr("width", button_width)
+      .attr("height", button_height)
+      .attr("fill", "#ff8c00")
+      .attr("opacity",buttonOpacity)
+      .on("mouseover", function(d) {
+          d3.select(this)
+          .style('opacity', buttonOpacityHover)
 
-sentSvg.append("rect")
-    .attr("class", "rect")
-    .attr("width", button_width)
-    .attr("height", button_height)
-    .attr("fill", "#ff8c00")
-    .attr("opacity",buttonOpacity)
-    .on("mouseover", function(d) {
-        d3.select(this)
-        .style('opacity', buttonOpacityHover)
+      })
+      .on("mouseout", function(d) {
+          d3.select(this)
+          .style('opacity', buttonOpacity)
 
-    })
-    .on("mouseout", function(d) {
-        d3.select(this)
-        .style('opacity', buttonOpacity)
+      })
 
-    })
+  sentSvg.append("text")
+      .text("Sentencing")
+      .attr("transform", "translate(" + (button_width/2) + "," + (button_height/2) + ")")
+      .attr("text-anchor", "middle")
+      .style('fill',"black")
+      .attr('font-size',12);
 
-sentSvg.append("text")
-    .text("Sentencing")
-    .attr("transform", "translate(" + (button_width/2) + "," + (button_height/2) + ")")
-    .attr("text-anchor", "middle")
-    .style('fill',"black")
-    .attr('font-size',12);
-    
-//Define key function, to be used when binding data
-var key = function(d) {
-    return d.key;
-};
+}
 
 function makeVis2(allData,Configuration) {
     // console.log(Configuration)
@@ -342,15 +345,14 @@ function nested(dataset,config) {
       return nested_total;
   };
 
-  function createParentElem() {
+function createParentElem() {
     $(".lineChart").empty();
     var parentElement = d3.select(".lineChart").append('div')
 
     return parentElement
   }
   
-
-  function makeSvg(parentElement,moveChart) {
+function makeSvg(parentElement,moveChart) {
     
       var svg = parentElement.append("svg").attr("id", "line-chart")
       .attr("width", (width+margin+250)+"px")
@@ -376,12 +378,7 @@ function removeLineChart() {
 }
 
 
-  function makelineChart(data, config) {
-    //     console.log(config["name"]);
-    //     figureID = config["name"];
-    //   var parentElement = d3.select("#" + figureID );
-        // $(".lineChart").empty();
-        // var parentElement = d3.select(".lineChart").append('div')
+function makelineChart(data, config) {
     
         // data = data
         var firstPie = 0;
@@ -396,9 +393,6 @@ function removeLineChart() {
             //console.log(d.Year)
         });
         }); 
-    
-        // console.log(data);
-    
     /* Scale */
     var xScale = d3.scaleTime()
       .domain(d3.extent(data[0].values, d => d.Year))
@@ -413,37 +407,15 @@ function removeLineChart() {
             }
         })
     })
-    // var max = d3.max(data, function(d) {
-    //     console.log(d)
-    //     d3.max(d.values, function(d) {
-    
-    //     })
-    //     })
-    console.log(max)
     var yScale = d3.scaleLinear()
       .domain([0, max])
       .range([height-margin, 0]);
     
     var color = d3.scaleOrdinal(d3.schemeCategory10);
     
-    /* Add SVG */
-    // var svg = parentElement.append("svg")
-    //   .attr("width", (width+margin + 100)+"px")
-    //   .attr("height", (height+margin)+"px")
-    //   .append('g')
-    //   .attr("transform", 'translate('  + 100 + "," + 50 + ")");
     
     parentElement = createParentElem()
-    svg = makeSvg(parentElement,300)
-    // console.log(svg)
-    // svg.append("text")
-    //   .attr()
-    // svg.append("text")
-    //   .attr("transform","translate(" + (-350) + "," + (0) +")")
-    //   .text("Source: Cook County State Attorney's Office Data Portal")
-    //   .attr('font-family', 'tahoma')
-    //   .attr('font-size',12); 
-    // parentElement = makeSvg(100).parentElement
+    svg = makeSvg(parentElement,290)
 
     // console.log(svg.parentElement)
     /* Add line into SVG */
@@ -625,11 +597,11 @@ function removeLineChart() {
         .data(results)
         .enter().append("g")
         .attr("class", "legend")
-        .attr("transform", function(d,i) { return "translate(0," + i*20 + ")"; })
+        .attr("transform", function(d,i) { return "translate(" + 10  + "," + i*20 + ")"; })
        .style("opacity","1");
     
     legend.append("rect")
-      .attr("x", width - 10)
+      .attr("x", width+10 )
       .attr("width", 10)
       .attr("height", 18)
       .style("fill", function(d) { 
@@ -645,8 +617,8 @@ function removeLineChart() {
       });
     
     legend.append("text")
-      .attr("x", width - 15)
-      .attr("y", 9)
+      .attr("x", width+5)
+      .attr("y", 5)
       .attr("dy", ".35em")
       .style("text-anchor", "end")
       .attr("font-size",10)
@@ -677,7 +649,6 @@ function click(d,firstPie){  // utility function to be called on mouseover.
 
     removeLineChart()
 
-
     gender = d.Gender;
     race = d.Race;
     parent = d.Parent
@@ -686,9 +657,8 @@ function click(d,firstPie){  // utility function to be called on mouseover.
     pC.update(d,gender,race,"on",firstPie);
   }
 
-
   
-  var pC = {};
+var pC = {};
   
 pC.update = function(d,gender,race, mouse,firstPie){
   
@@ -723,10 +693,6 @@ pC.update = function(d,gender,race, mouse,firstPie){
                         // .append('g')
                         // .attr('transform','translate(150,0)')
 
-    
-    // var div = pieSvg.append('div')
-    // .attr("class", "tooltip")				
-    // .style("opacity", 0);
 
     if (firstPie===1) {
         d3.selectAll(".pie")

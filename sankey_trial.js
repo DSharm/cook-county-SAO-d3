@@ -193,7 +193,7 @@ function make_sankey(data, year) {
                     }
             else if (d.name === "No Conviction" || 
                     d.name === "Conviction" ||
-                    d.name === "Pending" ) {
+                    d.name === "Pending Conviction" ) {
                 return sankeyColor(3)
             }
             else if (d.name === "Pending Sentence" || 

@@ -6,7 +6,7 @@ var Configuration = {
             "group":"initiation_result",
             "padding": 0.07,
             "title":"Intake - Outcome of Cases Entering SAO System",
-            "explanation": "The Intake dataset represents....",
+            "explanation": "The Intake dataset represents ",
             "explanation2": "The Intake dataset represents...."
 
 
