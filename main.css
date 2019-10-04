@@ -33,6 +33,15 @@ h2 {
   font-size: 8;
 }
 
+.inner {
+  
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  /* z-index: -1; */
+
+}
+
 /* h2 {
   display: flex;
   justify-content: center;

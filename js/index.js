@@ -490,17 +490,38 @@ function makelineChart(data, config) {
             .style("cursor", "none");
         });
     
-        var totalLength = path.node().getTotalLength();
+        // console.log(path.node())
+        // console.log(path._groups[0])
 
-        // Set Properties of Dash Array and Dash Offset and initiate Transition
-        // http://duspviz.mit.edu/d3-workshop/transitions-animation/
-        path
-            .attr("stroke-dasharray", (totalLength*2) + " " + (totalLength*2))
-            .attr("stroke-dashoffset", totalLength)
-          .transition() // Call Transition Method
-            .duration(UNROLL_DURATION) // Set Duration timing (ms)
-            //.ease(d3.easeLinear) // Set Easing option
-            .attr("stroke-dashoffset", 0); // Set final value of dash-offset for transition
+        // path.forEach(function(d) {
+
+                 
+        //   console.log(d.node())
+
+
+        // })
+        // path.forEach(function(d) {
+        //https://stackoverflow.com/questions/21140547/accessing-svg-path-length-in-d3
+      path.each(function(d) { d.totalLength = this.getTotalLength(); })
+          .attr("stroke-dasharray", function(d) { return d.totalLength + " " + d.totalLength; })
+          .attr("stroke-dashoffset", function(d) { return d.totalLength; })
+          .transition()
+          .duration(UNROLL_DURATION)
+          .attr("stroke-dashoffset",0);
+
+
+        // })
+        // var totalLength = path.node().getTotalLength();
+
+        // // Set Properties of Dash Array and Dash Offset and initiate Transition
+        // // http://duspviz.mit.edu/d3-workshop/transitions-animation/
+        // path
+        //     .attr("stroke-dasharray", (totalLength*2) + " " + (totalLength*2))
+        //     .attr("stroke-dashoffset", totalLength)
+        //   .transition() // Call Transition Method
+        //     .duration(UNROLL_DURATION) // Set Duration timing (ms)
+        //     //.ease(d3.easeLinear) // Set Easing option
+        //     .attr("stroke-dashoffset", 0); // Set final value of dash-offset for transition
     
     /* Add circles in the line */
    circleGroups = lines.selectAll("circle-group")
