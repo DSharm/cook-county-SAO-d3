@@ -381,6 +381,7 @@ var dataTime = d3.range(0, 9).map(function(d) {
         //console.log(d3.timeFormat('%Y')(val));
         year = d3.timeFormat('%Y')(val);
         d3.selectAll("#Sankey")
+                
               .remove();
         // $("#Sankey").empty();
         //console.log(dataset);

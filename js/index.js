@@ -21,10 +21,26 @@ var circleOpacityOnLineHover = "0.25"
 var circleRadius = 6;
 var circleRadiusHover = 8;
 
-var UNROLL_DURATION = 2000;
+var UNROLL_DURATION = 1000;
 var CIRCLE_DURATION = 3000;
 var DISPLAY_TEXT = 1500;
 var REMOVE_TEXT = 1000;
+var REMOVE_LINES = 400;
+var DELAY_UNROLL = 1000;
+var CHANGE_Y_AXIS = 900;
+var moveChartRight_DURATION = 500;
+var moveChartLeft_DURATION = 500;
+var DELAY_Y_AXIS = 500;
+
+var yScale = d3.scaleLinear().range([height-margin, 0]);
+var yAxis = d3.axisLeft(yScale).ticks(12);
+
+
+var xScale = d3.scaleTime().range([0, width-margin]);
+var xAxis = d3.axisBottom(xScale).ticks(10);
+
+var viewState = 0;
+var moveChartRight = 290;
 
 // Set colors for pie charts   
 var intakeColor = d3.scaleOrdinal()
@@ -179,11 +195,21 @@ function makeButtons() {
 function makeVis2(allData,Configuration) {
     // console.log(Configuration)
     document.getElementById("Intake").addEventListener('click', function(event) {
+
+      d3.selectAll(".pie")
+        .transition()
+        .duration(1)
+        .attr('opacity',0)
+        .remove();  
+        
+        moveLineChartRight(moveChartRight) 
         dataset = allData[0];
         config = Configuration["Intake"]
         nested_data = nested(dataset,config)
 
         makelineChart(nested_data,config);
+
+        viewState ++ ;
 
         // Add explanatory text
         d3.select(".inner#Disposition")
@@ -201,11 +227,17 @@ function makeVis2(allData,Configuration) {
           .transition()
           .duration(DISPLAY_TEXT)
           .style("opacity",1)
-
         
       })
 
       document.getElementById("Disposition").addEventListener('click', function(event) {
+        d3.selectAll(".pie")
+        .transition()
+        .duration(1)
+        .attr('opacity',0)
+        .remove();  
+
+        moveLineChartRight(moveChartRight) 
         dataset = allData[1];
         config = Configuration["Disposition"]
         //console.log(dataset)
@@ -214,6 +246,8 @@ function makeVis2(allData,Configuration) {
         nested_data = nested(dataset,config)
 
         makelineChart(nested_data,config);
+
+        viewState ++ ;
 
          // Add explanatory text
          d3.select(".inner#Disposition")
@@ -234,6 +268,13 @@ function makeVis2(allData,Configuration) {
         
       })
       document.getElementById("Sentence").addEventListener('click', function(event) {
+        d3.selectAll(".pie")
+        .transition()
+        .duration(1)
+        .attr('opacity',0)
+        .remove();  
+
+        moveLineChartRight(moveChartRight) 
         dataset = allData[2];
         config = Configuration["Sentence"]
         //console.log(dataset)
@@ -242,6 +283,8 @@ function makeVis2(allData,Configuration) {
         nested_data = nested(dataset,config)
 
         makelineChart(nested_data,config);
+
+        viewState ++ ;
 
         // Add explanatory text
         d3.select(".inner#Disposition")
@@ -321,40 +364,57 @@ function nested(dataset,config) {
   };
 
 function createParentElem() {
+  
     $(".lineChart").empty();
     var parentElement = d3.select(".lineChart").append('div')
 
     return parentElement
   }
   
-function makeSvg(parentElement,moveChart) {
+function makeSvg(parentElement,moveChartRight) {
     
       var svg = parentElement.append("svg").attr("id", "line-chart")
       .attr("width", (width+margin+250)+"px")
       .attr("height", (height+margin)+"px")
       .append("g")
       .attr("id", 'line-chart-g')
-      .attr("transform", 'translate('  + moveChart + "," + margin + ")");
+      .attr("transform", 'translate('  + moveChartRight + "," + margin + ")");
 
       return svg
   }
 
-function removeLineChart() {
+function moveLineChartRight(moveChartRight) {
+  d3.select("#line-chart")
+    .transition()
+    .duration(moveChartRight_DURATION)
+    .attr('width',(width+margin+250)+"px")
+    
     d3.select("#line-chart-g")
         .transition()
-        .duration(1000)
+        .duration(moveChartRight_DURATION)
+        .attr("transform",'translate('  + moveChartRight + "," + margin + ")")
+        
+    
+
+}
+
+
+function moveLineChartLeft() {
+    d3.select("#line-chart-g")
+        .transition()
+        .duration(moveChartLeft_DURATION)
         .attr("transform",'translate('  + 50 + "," + margin + ")")
         
     d3.select("#line-chart")
         .transition()
-        .duration(1000)
+        .duration(moveChartLeft_DURATION)
         .attr('width',(width+margin+200)+"px")
 
 }
 
 
 function makelineChart(data, config) {
-    
+      console.log(viewState)
         // data = data
         var firstPie = 0;
         console.log(data);
@@ -369,9 +429,7 @@ function makelineChart(data, config) {
         });
         }); 
     /* Scale */
-    var xScale = d3.scaleTime()
-      .domain(d3.extent(data[0].values, d => d.Year))
-      .range([0, width-margin]);
+    
     
     var max = data[0].values[0].Total;
     
@@ -382,15 +440,41 @@ function makelineChart(data, config) {
             }
         })
     })
-    var yScale = d3.scaleLinear()
-      .domain([0, max])
-      .range([height-margin, 0]);
+    // var yScale = d3.scaleLinear()
+    //   .domain([0, max])
+    //   .range([height-margin, 0]);
+      xScale.domain(d3.extent(data[0].values, d => d.Year))
+      yScale.domain([0,max])
+      // console.log(max)
     
     var color = d3.scaleOrdinal(d3.schemeCategory10);
     
+    if (viewState===0) {
+      parentElement = createParentElem()
+      svg = makeSvg(parentElement,moveChartRight)
+
+    }
+
+    if (viewState!==0) {
+
+      // d3.select("#line-chart-g")
+      //   .transition()
+      //   .duration(1000)
+      //   .attr("transform",'translate('  + 50 + "," + margin + ")")
+        
+      d3.select("text.title")
+        .transition()
+        .duration(300)
+        .style("opacity",0)
+
+      d3.select(".lines")
+        .transition()
+        .duration(REMOVE_LINES)
+        .style("opacity",0)
+        .remove()
+
+    }
     
-    parentElement = createParentElem()
-    svg = makeSvg(parentElement,290)
 
     // console.log(svg.parentElement)
     /* Add line into SVG */
@@ -481,6 +565,7 @@ function makelineChart(data, config) {
           .attr("stroke-dasharray", function(d) { return d.totalLength + " " + d.totalLength; })
           .attr("stroke-dashoffset", function(d) { return d.totalLength; })
           .transition()
+          .delay(DELAY_UNROLL)
           .duration(UNROLL_DURATION)
           .attr("stroke-dashoffset",0);
 
@@ -558,29 +643,58 @@ function makelineChart(data, config) {
           })
     .style('opacity', 0)
       .transition()
+      .delay(DELAY_UNROLL)
       .duration(CIRCLE_DURATION)
       .style('opacity', circleOpacity)
       
     /* Add Axis into SVG */
-    var xAxis = d3.axisBottom(xScale).ticks(10);
-    var yAxis = d3.axisLeft(yScale).ticks(12);
     
-    svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", `translate(0, ${height-margin})`)
-      .call(xAxis);
+    // var yAxis = d3.axisLeft(yScale).ticks(12);
     
-    svg.append("g")
+    
+    
+    if (viewState===0) {
+      svg.append("g")
       .attr("class", "y axis")
       .call(yAxis)
       .append('text')
       //.attr("y", 15)
-      .attr('x', 50)
-      .attr("transform", "rotate(-90)")
+      .attr('x', 5)
+      .attr('y', -5)
+      // .attr("transform", "rotate(-90)")
       .attr("fill", "#000")
       .text("Total cases");
+
+      svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", `translate(0, ${height-margin})`)
+      .call(xAxis);
+    }
     
-    console.log(data);
+    // if (viewState !== 0) {
+    //   console.log(viewState)
+    //   svg.selectAll(".y.axis")
+    //   .transition()
+    //   .duration(750)
+    //   .call(yAxis)
+    // }
+    if (viewState !== 0) {
+      svg.selectAll("g.y.axis")
+      .transition()
+      .delay(DELAY_Y_AXIS)
+      .duration(CHANGE_Y_AXIS)
+      .call(yAxis)
+
+      svg.selectAll("g.x.axis")
+      .transition()
+      .duration(750)
+      .call(xAxis)
+      // .style("opacity",0.5)
+    }
+    
+      // .call(yAxis)
+
+    // console.log(data);
     var results = []
 
     data.forEach(function(d) {
@@ -620,18 +734,23 @@ function makelineChart(data, config) {
       .attr("font-size",10)
       .text(function(d) {return d; });
     
-    svg.append("text")
+    lines.append("text")
         .attr("transform","translate(" + 0 + "," + (height-10) +")")
         .text("Source: Cook County State Attorney's Office Data Portal")
         .attr('font-family', 'tahoma')
         .attr('font-size',12); 
 
-    svg.append("text")
+    lines.append("text")
+        .attr("class","title")
         .attr("transform","translate(" + width/2 + "," + (-30) +")")
         .text(config["title"])
         .attr("text-anchor","middle")
         .attr('font-family', 'tahoma')
-        .attr('font-size',14);
+        .attr('font-size',14)
+        .style('opacity',0)
+        .transition()
+        .duration(1000)
+        .style('opacity',1)
     
       
   };
@@ -643,7 +762,7 @@ function click(d,firstPie){  // utility function to be called on mouseover.
     .attr('opacity',0)
     .remove();  
 
-    removeLineChart()
+    moveLineChartLeft()
 
     gender = d.Gender;
     race = d.Race;
