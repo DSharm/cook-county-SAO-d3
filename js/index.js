@@ -23,6 +23,8 @@ var circleRadiusHover = 8;
 
 var UNROLL_DURATION = 2000;
 var CIRCLE_DURATION = 3000;
+var DISPLAY_TEXT = 1500;
+var REMOVE_TEXT = 1000;
 
 // Set colors for pie charts   
 var intakeColor = d3.scaleOrdinal()
@@ -181,34 +183,25 @@ function makeVis2(allData,Configuration) {
         config = Configuration["Intake"]
         nested_data = nested(dataset,config)
 
-        d3.select("#g-exp")
-        .remove()
-
-      text = d3.select("#Explanation") 
-        .append('g')
-        .attr('id','g-exp')
-        .style('opacity',0)
-
-        text
-        .append('text')
-        .attr('class',"text-exp")
-        .attr("transform","translate(" + 0 + "," + 15 +")")
-        .text(config["explanation"])
-
-        text
-        .append('text')
-        .attr('class',"text-exp")
-        .attr("transform","translate(" + 0 + "," + 30 +")")
-        .text(config["explanation2"])
-
-
-        d3.select("#g-exp")
-        .transition()
-        .duration(2000)
-        .style("opacity",1)
-          
-
         makelineChart(nested_data,config);
+
+        // Add explanatory text
+        d3.select(".inner#Disposition")
+          .transition()
+          .duration(REMOVE_TEXT)
+          .style("opacity",0)
+        
+        d3.select(".inner#Sentencing")
+          .transition()
+          .duration(REMOVE_TEXT)
+          .style("opacity",0)
+
+
+        d3.select(".inner#Intake")
+          .transition()
+          .duration(DISPLAY_TEXT)
+          .style("opacity",1)
+
         
       })
 
@@ -220,33 +213,24 @@ function makeVis2(allData,Configuration) {
 
         nested_data = nested(dataset,config)
 
-        d3.select("#g-exp")
-        .remove()
-
-      text = d3.select("#Explanation") 
-        .append('g')
-        .attr('id','g-exp')
-        .style('opacity',0)
-
-        text
-        .append('text')
-        .attr('class',"text-exp")
-        .attr("transform","translate(" + 0 + "," + 15 +")")
-        .text(config["explanation"])
-
-        text
-        .append('text')
-        .attr('class',"text-exp")
-        .attr("transform","translate(" + 0 + "," + 30 +")")
-        .text(config["explanation2"])
-
-
-        d3.select("#g-exp")
-        .transition()
-        .duration(2000)
-        .style("opacity",1)
-
         makelineChart(nested_data,config);
+
+         // Add explanatory text
+         d3.select(".inner#Disposition")
+         .transition()
+         .duration(DISPLAY_TEXT)
+         .style("opacity",1)
+       
+       d3.select(".inner#Sentencing")
+         .transition()
+         .duration(REMOVE_TEXT)
+         .style("opacity",0)
+
+
+       d3.select(".inner#Intake")
+         .transition()
+         .duration(REMOVE_TEXT)
+         .style("opacity",0)
         
       })
       document.getElementById("Sentence").addEventListener('click', function(event) {
@@ -257,33 +241,24 @@ function makeVis2(allData,Configuration) {
 
         nested_data = nested(dataset,config)
 
-        d3.select("#g-exp")
-          .remove()
-
-        text = d3.select("#Explanation") 
-          .append('g')
-          .attr('id','g-exp')
-          .style('opacity',0)
-
-          text
-          .append('text')
-          .attr('class',"text-exp")
-          .attr("transform","translate(" + 0 + "," + 15 +")")
-          .text(config["explanation"])
-
-          text
-          .append('text')
-          .attr('class',"text-exp")
-          .attr("transform","translate(" + 0 + "," + 30 +")")
-          .text(config["explanation2"])
-
-
-          d3.select("#g-exp")
-          .transition()
-          .duration(2000)
-          .style("opacity",1)
-
         makelineChart(nested_data,config);
+
+        // Add explanatory text
+        d3.select(".inner#Disposition")
+        .transition()
+        .duration(REMOVE_TEXT)
+        .style("opacity",0)
+      
+      d3.select(".inner#Sentencing")
+        .transition()
+        .duration(DISPLAY_TEXT)
+        .style("opacity",1)
+
+
+      d3.select(".inner#Intake")
+        .transition()
+        .duration(REMOVE_TEXT)
+        .style("opacity",0)
         
       })
     }

@@ -33,11 +33,19 @@ h2 {
   font-size: 8;
 }
 
+/* https://stackoverflow.com/questions/1834831/how-to-position-two-divs-above-each-over/1834868 */
+.text-container {
+  position: relative;
+  margin-bottom: 50px;
+}
+
 .inner {
-  
-  display: flex;
-  justify-content: center;
   position: absolute;
+  margin-left : 300px;
+  margin-right: 200px;
+  z-index: 0;
+  opacity: 0;
+  /* bottom: 1px; */
   /* z-index: -1; */
 
 }
