@@ -1,6 +1,4 @@
 // Code by: Damini Sharma
-
-
 var width = 550;
 var height = 500;
 var margin = 70;
@@ -35,7 +33,6 @@ var DELAY_Y_AXIS = 500;
 var yScale = d3.scaleLinear().range([height-margin, 0]);
 var yAxis = d3.axisLeft(yScale).ticks(12);
 
-
 var xScale = d3.scaleTime().range([0, width-margin]);
 var xAxis = d3.axisBottom(xScale).ticks(10);
 
@@ -64,7 +61,6 @@ var key = function(d) {
   return d.key;
 };
 
-
 // //datasetG = []
 // Load data
 Promise.all([
@@ -73,18 +69,9 @@ Promise.all([
   d3.json("processed_data/sent_year_race_gender.json")
 ]).then(function(allData) {
 
-    // dataset.push(allData)
-
-    //console.log(allData)
-    //console.log(Configuration.BarCharts)
     makeButtons()
     makeVis2(allData,Configuration.BarCharts);
     
-  // https://github.com/UrbanInstitute/state-economic-monitor
-//   $.each(Configuration.BarCharts, function(x, config) {
-    
-//     makeVis(allData,config,variable);
-//   })
 });
 
 
@@ -164,7 +151,6 @@ function makeButtons() {
       .attr("height", (button_height)+"px")
       .append('g')
       .attr("transform", 'translate(0,0)')
-      // .attr("transform", `translate(${margin}, ${margin})`);
 
   sentSvg.append("rect")
       .attr("class", "rect")
@@ -240,11 +226,7 @@ function makeVis2(allData,Configuration) {
         moveLineChartRight(moveChartRight) 
         dataset = allData[1];
         config = Configuration["Disposition"]
-        //console.log(dataset)
-        //console.log(config)
-
         nested_data = nested(dataset,config)
-
         makelineChart(nested_data,config);
 
         viewState ++ ;
@@ -277,11 +259,7 @@ function makeVis2(allData,Configuration) {
         moveLineChartRight(moveChartRight) 
         dataset = allData[2];
         config = Configuration["Sentence"]
-        //console.log(dataset)
-        //console.log(config)
-
         nested_data = nested(dataset,config)
-
         makelineChart(nested_data,config);
 
         viewState ++ ;
@@ -292,13 +270,12 @@ function makeVis2(allData,Configuration) {
         .duration(REMOVE_TEXT)
         .style("opacity",0)
       
-      d3.select(".inner#Sentencing")
+        d3.select(".inner#Sentencing")
         .transition()
         .duration(DISPLAY_TEXT)
         .style("opacity",1)
 
-
-      d3.select(".inner#Intake")
+        d3.select(".inner#Intake")
         .transition()
         .duration(REMOVE_TEXT)
         .style("opacity",0)
@@ -310,11 +287,7 @@ function makeVis2(allData,Configuration) {
 function nested(dataset,config) {
     nested_total = d3.nest()
           .key(function(d) {
-              // return d.Year;
               group = config["group"];
-              //group = "Year";
-              //console.log(group);
-              //console.log(d[group]);
               return d[group];
           })
           .key(function(d){
@@ -703,12 +676,11 @@ function makelineChart(data, config) {
     console.log(results)
 
     // https://bl.ocks.org/bricedev/0d95074b6d83a77dc3ad
-    legend = svg.selectAll(".legend")
+    legend = lines.selectAll(".legend")
         .data(results)
         .enter().append("g")
         .attr("class", "legend")
-        .attr("transform", function(d,i) { return "translate(" + 10  + "," + i*20 + ")"; })
-       .style("opacity","1");
+        .attr("transform", function(d,i) { return "translate(" + 10  + "," + i*20 + ")"; });
     
     legend.append("rect")
       .attr("x", width+10 )
@@ -724,7 +696,13 @@ function makelineChart(data, config) {
         else if (config["name"] === "Sentence") {
           return sentColor(d);
         }
-      });
+      })
+      .style("opacity","0")
+      .transition()
+      .delay(1000)
+      .duration(1000)
+      .style("opacity","1");
+
     
     legend.append("text")
       .attr("x", width+5)
@@ -732,7 +710,12 @@ function makelineChart(data, config) {
       .attr("dy", ".35em")
       .style("text-anchor", "end")
       .attr("font-size",10)
-      .text(function(d) {return d; });
+      .text(function(d) {return d; })
+      .style("opacity", "0")
+      .transition()
+      .delay(1000)
+      .duration(1000)
+      .style("opacity","1");
     
     lines.append("text")
         .attr("transform","translate(" + 0 + "," + (height-10) +")")

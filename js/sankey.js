@@ -1,7 +1,7 @@
 // var margin_sankey = {top: 40,right: 40,bottom: 25,left: 40};
-var margin_sankey = 50;
-var width_sankey = 900;
-var height_sankey = 450;
+var margin_sankey = 20;
+var width_sankey = 850;
+var height_sankey = 320;
 // var barChartWidth = width - margin.right;
 // var barChartHeight = height  - margin.top*9;
 // var pieChartsWidth = 0.1 * width;
@@ -49,7 +49,7 @@ function make_sankey(data, year) {
     .attr("width", (width_sankey+margin_sankey)+"px")
     .attr("height", (height_sankey+margin_sankey)+"px")
     .append('g')
-    .attr("transform","translate(30,30)")
+    .attr("transform","translate(30,10)")
     
       
     // const svg = d3.select("#Sankey")
@@ -408,3 +408,87 @@ var dataTime = d3.range(0, 9).map(function(d) {
 //     console.log(selectValue);
 // })
 // d3.select('p#value-time').text(d3.timeFormat('%Y')(sliderTime.value()));
+
+// https://bl.ocks.org/susielu/23dc3082669ee026c552b85081d90976
+
+const type = d3.annotationCallout
+
+// const type = d3.annotationCustomType(
+//     d3.annotationCallout, 
+//     {"note":{
+//         "lineType":"none",
+//     }
+//     }
+//   )
+
+const annotations = [{
+  note: {
+    // label: "Longer text to show text wrapping",
+    bgPadding: {"top":15,"left":10,"right":10,"bottom":10},
+    title: "Intake"
+  },
+  //can use x, y directly instead of data
+  x: 375, 
+  y: 0,
+  className: "show-bg",
+  dy: (-30),
+  dx: 0
+},{
+    note: {
+        // label: "Longer text to show text wrapping",
+        // bgPadding: {"top":15,"left":20,"right":20,"bottom":10},
+        title: "All Case Participants"
+      },
+      //can use x, y directly instead of data
+      x: 100, 
+      y: 20,
+      className: "show-bg",
+      dy: (-35),
+      dx: 0
+},{
+    note: {
+        // label: "Longer text to show text wrapping",
+        // bgPadding: {"top":15,"left":20,"right":20,"bottom":10},
+        title: "Dispositions"
+      },
+      //can use x, y directly instead of data
+      x: 640, 
+      y: 0,
+      className: "show-bg",
+      dy: (-35),
+      dx: 0
+},{
+    note: {
+        // label: "Longer text to show text wrapping",
+        // bgPadding: {"top":15,"left":20,"right":20,"bottom":10},
+        title: "Sentencing"
+      },
+      //can use x, y directly instead of data
+      x: 930, 
+      y: 0,
+      className: "show-bg",
+      dy: (-35),
+      dx: (-0.1)
+}]
+
+
+const makeAnnotations = d3.annotation()
+  .editMode(true)
+  //also can set and override in the note.padding property
+  //of the annotation object
+  .notePadding(1)
+  .type(type)
+  //accessors & accessorsInverse not needed
+  //if using x, y in annotations JSON
+  .annotations(annotations)
+
+d3.select("#SankeyLabels")
+    .append("svg")
+    .attr('id',"SankeyLabels")
+    .style("background", "#fff")
+    .attr("width", (width_sankey+margin_sankey+100)+"px")
+    .attr("height", (55)+"px")
+    .append('g')
+    .attr("transform","translate(30,60)")
+    .attr("class", "annotation-group")
+    .call(makeAnnotations)

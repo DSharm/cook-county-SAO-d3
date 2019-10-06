@@ -726,7 +726,7 @@ intake_for_join <- intake %>%
 
 # Disposition 
 disposition %<>%
-  filter(PRIMARY_CHARGE == "true") %>%
+  #filter(PRIMARY_CHARGE == "true") %>%
   filter(GENDER %in% c("Male","Female")) %>%
   filter(RACE %in% c("Albino", "American Indian", "Asian", "ASIAN", "Biracial", "Black", "CAUCASIAN", "HISPANIC",
                      "Unknown", "White", "White [Hispanic or Latino]", "White/Black [Hispanic or Latino]")) %>%
@@ -868,7 +868,11 @@ intake_for_join_years <- intake_for_join %>%
   count(receive_year)
 
 
-intake_dispo_join <- full_join(intake_for_join, disposition_max_conviction,by="CASE_PARTICIPANT_ID")
+intake_dispo_join <- full_join(intake_for_join, disposition_max_conviction_receive,by="CASE_PARTICIPANT_ID")
+
+intake_dispo_join_NA <- intake_dispo_join %>%  filter(is.na(conviction)) %>% group_by(receive_year,initiation_result) %>% summarise(cases=n())
+
+
 sent_intake_dispo_join <- full_join(intake_dispo_join, sent_for_join_receive,by="CASE_PARTICIPANT_ID")
 
 # Make adjustments on full dataset to deal with "pending" cases
