@@ -991,4 +991,20 @@ pC.update = function(d,gender,race, mouse,firstPie){
     }
   }
 
- 
+ // List of references: 
+// https://bl.ocks.org/63anp3ca/6bafeb64181d87750dbdba78f8678715
+// https://css-tricks.com/scale-svg/
+// http://learnjsdata.com/group_data.html
+// https://stackoverflow.com/questions/37690018/d3-nested-grouped-bar-chart
+// http://bl.ocks.org/cflavs/695d3215ccbce135d3bd
+// https://github.com/emmacooperpeterson/human_trafficking_sentencing/blob/master/script.js
+// https://next.plnkr.co/edit/qGZ1YuyFZnVtp04bqZki?p=preview&utm_source=legacy&utm_medium=worker&utm_campaign=next&preview
+// https://github.com/UrbanInstitute/state-economic-monitor (used to help the basic architecture of project)
+// https://www.w3schools.com/jquery/html_empty.asp
+// https://observablehq.com/@mbostock/flow-o-matic
+// https://www.d3-graph-gallery.com/graph/sankey_basic.html
+// https://grokbase.com/t/gg/d3-js/156byjtyfv/how-to-change-opacity-of-links-when-clicked-on-a-node-in-sankey-diagram-using-d3-library
+// https://bl.ocks.org/johnwalley/e1d256b81e51da68f7feb632a53c3518
+// http://bl.ocks.org/d3noob/a22c42db65eb00d4e369
+// http://bl.ocks.org/danharr/af796d91926d254dfe99
+// https://codepen.io/zakariachowdhury/pen/JEmjwq
