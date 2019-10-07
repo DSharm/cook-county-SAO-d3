@@ -382,6 +382,7 @@ function moveLineChartLeft() {
         .transition()
         .duration(moveChartLeft_DURATION)
         .attr('width',(width+margin+200)+"px")
+      
 
 }
 
@@ -710,13 +711,21 @@ function makelineChart(data, config) {
       .attr("dy", ".35em")
       .style("text-anchor", "end")
       .attr("font-size",10)
-      .text(function(d) {return d; })
+      .text(function(d) {
+        if (d==="Filed by LEA") {
+          tspan()
+        }
+        else {
+          return d;
+        }})
       .style("opacity", "0")
       .transition()
       .delay(1000)
       .duration(1000)
       .style("opacity","1");
     
+    
+
     lines.append("text")
         .attr("transform","translate(" + 0 + "," + (height-10) +")")
         .text("Source: Cook County State Attorney's Office Data Portal")
@@ -737,6 +746,28 @@ function makelineChart(data, config) {
     
       
   };
+
+function tspan() {
+  d3.selectAll(".lines")
+    .append('text')
+    .attr('id','Filed-by-LEA')
+    .attr("font-size",10)
+    .attr("x", width-40)
+      .attr("y", 50)
+      .attr("dy",".35em")
+    .append('tspan')
+    .text('Filed by LEA')
+    .append('tspan')
+    .attr('baseline-shift','super')
+    .text('1')
+
+  d3.selectAll("#Filed-by-LEA")
+    .style("opacity", "0")
+      .transition()
+      .delay(1000)
+      .duration(1000)
+      .style("opacity","1");
+}
 
 function click(d,firstPie){  // utility function to be called on mouseover.
     d3.selectAll(".pie")

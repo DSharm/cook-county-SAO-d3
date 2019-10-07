@@ -9,7 +9,7 @@
   <div id=container>
     <div class="row-header">
       <div>
-        <h3> Cook County State Attorney's Office - Interactive Dashboard</h3>
+        <h2> Cook County State Attorney's Office - Interactive Dashboard</h2>
       </div>
       <div>
       </div>
@@ -21,12 +21,14 @@
     </div>
     <div class = row-header>
       <div class = "column left" > 
+          <h3> The Data</h3>
           <p> The Cook County State’s Attorney’s Office (SAO) is the second largest prosecutor’s office in the United States. Tens of thousands of criminal cases are prosecuted every year by the Office, across 100 law enforcement jurisdictions and in service of over five million residents of Cook County. When she took office in December 2016, State’s Attorney Kim Foxx announced a largely unprecedented commitment to improving the transparency of the SAO’s work. Accordingly, in 2017 the SAO released a Baseline Data Report, along with de-identified data capturing snapshots of all cases that go through the SAO from arrest to sentencing.</p>
       </div>
       <div class = "column middle"  id=sankey></div>
       <div class = "column right" >
-        
+          <h3> Dashboard</h3>
           <p> The purpose of this dashboard is to allow viewers to explore the SAO datasets - specifically the Intake, Dispositions, and Sentencing Datasets. The flow diagram below shows the life cycle of cases and their outcomes in each year. The slider can be used to change the year the cases were initiated. The slider is set to 2018 since the data is more complete - far more cases are pending in 2019.</p>
+          <p> The slider is set to 2018 since the data is more complete - far more cases are pending in 2019.</p>
       </div>
     </div>
  
@@ -45,7 +47,7 @@
           <h4> Click below to explore datasets further</h4>
         </div>
 
-    <div class = "row" id = "Buttons">
+    <div class = "row-header" id = "Buttons">
             <div id = "Intake"></div>
             <div id = "Disposition"></div>
             <div id = "Sentence"></div>   
@@ -56,9 +58,18 @@
     </div> -->
 
     <div class=text-container>
-        <div class=inner id= Intake > INTAKE</div>
-        <div class=inner id= Disposition> DISPOSITION</div>
-        <div class=inner id= Sentencing> SENTENCE</div>
+        <div class=inner id= Intake > 
+          <p>The Intake dataset represents all cases that enter the State's Attorney's Office (SAO). Most cases come into the system through a process known as felony review, where the SAO makes a decision about whether or not to prosecute. In case of narcotics, the cases can be filed directly by law enforcement agencies (LEA). The chart below shows the outcomes for cases that enter the system.</p>
+          <h6> Click on any circle to see the demographic breakdown for that outcome in a given year</h6>
+        </div>
+        <div class=inner id= Disposition> 
+          <p> The Dispositions dataset represents the result of the fact-finding process for each charge brought against each case participant, since a case can have multiple participants and each participant can have multiple charges against them. The chart here reflects the year the case was initiated, rather than the year that the charges were disposed of. For example, 22,860 of the case participants initiated in the system received convictions, though they may have received convictions well after 2015. The outcomes here also reflect whether any of the multiple charges against a case participant result in a conviction. </p>
+          <h6> Click on any circle to see the demographic breakdown for that outcome in a given year</h6>
+        </div>
+        <div class=inner id= Sentencing> 
+            <p> The Sentencing dataset represents the sentence given to each case participant that is convicted of at least one charge. The chart here reflects the year the case was initiated, rather than the year that the charges received a sentence. For example, 11,888 of the case participants initiated in the system in 2015 received a prison sentence, though the actual sentence may have been imposed at a later date. </p>
+            <h6> Click on any circle to see the demographic breakdown for that outcome in a given year</h6>
+        </div>
     </div>
     <!-- <p class = "explanation" align=center id="IntakeExplanation"> The Intake dataset shows the dkfj;kfjsdfks;ldjfas;lkdfjas;  </p>
     <p class = "explanation" align=center id="DispositionExplanation"> The Dispositions dataset shows the dkfj;kfjsdfks;ldjfas;lkdfjas;  </p> -->
@@ -68,8 +79,15 @@
       </div>
     </div>
 
-    <div class = "row" id="footer">
-          <p></p> Add footnotes</p>
+    <div class = "row-footer" id="footer">
+      <p> 1: Filed by LEA (Law Enforcement Agency) refers to cases that were filed directly by law enforcement - usually Narcotics cases - and do not go through the felony review process 
+        <br>
+        <br>
+        Data Source: <a href="https://www.cookcountystatesattorney.org/about/case-level-data"> Cook County State Attorney's Office Data Portal </a>
+        <br>
+        Code: <a href = "https://github.com/DSharm/cook-county-SAO-d3"> GitHub Repository</a>
+      </p>
+
     </div>
 
 </div>

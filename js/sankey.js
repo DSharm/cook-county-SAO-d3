@@ -1,6 +1,6 @@
 // var margin_sankey = {top: 40,right: 40,bottom: 25,left: 40};
 var margin_sankey = 20;
-var width_sankey = 850;
+var width_sankey = 800;
 var height_sankey = 320;
 // var barChartWidth = width - margin.right;
 // var barChartHeight = height  - margin.top*9;
@@ -428,7 +428,7 @@ const annotations = [{
     title: "Intake"
   },
   //can use x, y directly instead of data
-  x: 375, 
+  x: 270, 
   y: 0,
   className: "show-bg",
   dy: (-30),
@@ -440,7 +440,7 @@ const annotations = [{
         title: "All Case Participants"
       },
       //can use x, y directly instead of data
-      x: 100, 
+      x: 10, 
       y: 20,
       className: "show-bg",
       dy: (-35),
@@ -452,7 +452,7 @@ const annotations = [{
         title: "Dispositions"
       },
       //can use x, y directly instead of data
-      x: 640, 
+      x: 520, 
       y: 0,
       className: "show-bg",
       dy: (-35),
@@ -464,7 +464,7 @@ const annotations = [{
         title: "Sentencing"
       },
       //can use x, y directly instead of data
-      x: 930, 
+      x: 770, 
       y: 0,
       className: "show-bg",
       dy: (-35),

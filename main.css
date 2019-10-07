@@ -29,28 +29,31 @@ body {
 
 }
 
-.left .right {
-  width: 15%;
+.left {
+  width: 20%;
+}
+.right {
+  width: 20%
 }
 
 .middle {
-  width: 70%;
+  width: 60%;
 }
 
 
 /* Clear floats after the columns */
-.row:after {
+/* .row:after {
   content: "";
   display: table;
   clear: both;
-}
-/*
+} */
+
 
 .row {
   width: 1300px;
   display:flex;
-  padding-left: 50px;
-  padding-right: 25px;
+  padding-left: 100px;
+  padding-right: 5px;
   padding-top: 10px;
   /* justify-content: center; */
   
@@ -58,8 +61,8 @@ body {
   padding: 50px 50px 50px 50px;
   background-color: white;
   box-shadow: 0 0 20px #ccc; */
-/* }
-*/ 
+} 
+
 
 h1 {
   margin-bottom: 25px;
@@ -81,14 +84,18 @@ h2 {
 
 /* https://stackoverflow.com/questions/1834831/how-to-position-two-divs-above-each-over/1834868 */
 .text-container {
-  position: relative;
-  margin-bottom: 50px;
+  display: flex;
+  justify-content: start;
+  /* position: relative; */
+  margin-bottom: 120px;
+  /* margin-left:100px;
+  margin-right:150px; */
 }
 
 .inner {
   position: absolute;
   margin-left : 300px;
-  margin-right: 200px;
+  margin-right: 350px;
   z-index: 0;
   opacity: 0;
   /* bottom: 1px; */
@@ -133,6 +140,14 @@ h2 {
   padding-right: 25px;
   padding-top: 5px;
   justify-content: center;
+}
+
+.row-footer {
+  display:flex;
+  padding-left: 25px;
+  padding-right: 25px;
+  padding-top: 5px;
+  justify-content: start;
 }
 
 /* .row-header-sankey {
