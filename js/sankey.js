@@ -395,10 +395,10 @@ var dataTime = d3.range(0, 9).map(function(d) {
   var gTime = d3
     .select('div#slider-time')
     .append('svg')
-    .attr('width', 350)
-    .attr('height', 100)
+    .attr('width', 600)
+    .attr('height', 70)
     .append('g')
-    .attr('transform', 'translate(30,30)');
+    .attr('transform', 'translate(250,30)');
 
   gTime.call(sliderTime);
 
@@ -428,7 +428,7 @@ const annotations = [{
     title: "Intake"
   },
   //can use x, y directly instead of data
-  x: 270, 
+  x: 260, 
   y: 0,
   className: "show-bg",
   dy: (-30),
@@ -440,7 +440,7 @@ const annotations = [{
         title: "All Case Participants"
       },
       //can use x, y directly instead of data
-      x: 10, 
+      x: 8, 
       y: 20,
       className: "show-bg",
       dy: (-35),
@@ -452,7 +452,7 @@ const annotations = [{
         title: "Dispositions"
       },
       //can use x, y directly instead of data
-      x: 520, 
+      x: 512, 
       y: 0,
       className: "show-bg",
       dy: (-35),
@@ -464,7 +464,7 @@ const annotations = [{
         title: "Sentencing"
       },
       //can use x, y directly instead of data
-      x: 770, 
+      x: 768, 
       y: 0,
       className: "show-bg",
       dy: (-35),
@@ -482,11 +482,11 @@ const makeAnnotations = d3.annotation()
   //if using x, y in annotations JSON
   .annotations(annotations)
 
-d3.select("#SankeyLabels")
+d3.select("#sankey")
     .append("svg")
     .attr('id',"SankeyLabels")
     .style("background", "#fff")
-    .attr("width", (width_sankey+margin_sankey+100)+"px")
+    .attr("width", (width_sankey+margin_sankey)+"px")
     .attr("height", (55)+"px")
     .append('g')
     .attr("transform","translate(30,60)")
