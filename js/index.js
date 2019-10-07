@@ -600,7 +600,12 @@ function makelineChart(data, config) {
       .attr("r", circleRadius)
       .on("click", function(d) {
             firstPie++
-            console.log(d)
+            
+            d3.select(this)
+              .transition()
+              .duration(duration)
+              .attr("r", circleRadiusHover);
+            
             click(d,firstPie)
       })
       .on("mouseover", function(d) {
@@ -853,10 +858,11 @@ pC.update = function(d,gender,race, mouse,firstPie){
         pieSvg.append("text")
           .attr("class", "pie-text")
           .style("fill", color_gender(i))        
-          .text(d.data.key + ":" + d.data.value)
+          .text(d.data.key + ": " + d.data.value)
           .attr("text-anchor", "middle")
           .attr("x", (margin*1.7))
-          .attr("y", (margin*2)-5);
+          .attr("y", (margin*2)-5)
+          .attr('font-size',13);
       })
     .on("mouseout", function(d) {
         pieSvg.select(".pie-text").remove();
@@ -929,7 +935,8 @@ pC.update = function(d,gender,race, mouse,firstPie){
           .text(d.data.key + ":" + d.data.value)
           .attr("text-anchor", "middle")
           .attr("x", (margin*1.7))
-          .attr("y", (margin*5.5)-5);
+          .attr("y", (margin*5.5)-5)
+          .attr('font-size',13);;
       })
     .on("mouseout", function(d) {
         pieSvg.select(".pie-text").remove();
