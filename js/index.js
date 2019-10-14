@@ -193,7 +193,7 @@ function makeVis2(allData,Configuration) {
         
       })
     }
-
+    // adapted from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_active_element
     var header = document.getElementById("Buttons");
     var btns = header.getElementsByClassName("btn");
     console.log(btns)
