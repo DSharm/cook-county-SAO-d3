@@ -23,7 +23,7 @@ text {
 }
 
 text:hover {
-  cursor: pointer;
+  cursor: default;
 }
 
 
@@ -159,6 +159,7 @@ h2 {
   font-size: 50px;
 }
 
+/* https://stackoverflow.com/questions/28261287/how-to-change-btn-color-in-bootstrap */
 .btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
   background-color: #107386 !important;
   border-color: #107386 !important;
@@ -221,6 +222,10 @@ polyline{
   stroke: black;
   stroke-width: 2px;
   fill: none;
+}
+
+path.pie {
+  cursor: pointer;
 }
 
 

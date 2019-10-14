@@ -824,6 +824,7 @@ pC.update = function(d,gender,race, mouse,firstPie){
       .data(pie(gender))
       .enter()
       .append('path')
+      .attr("class","pie")
       .attr('d', arc)
       .attr("fill",function(d,i) {return color_gender(i);})
       .on("mouseover", function(d, i) {
@@ -831,7 +832,7 @@ pC.update = function(d,gender,race, mouse,firstPie){
         pieSvg.append("text")
           .attr("class", "pie-text")
           .style("fill", color_gender(i))        
-          .text(d.data.key + ": " + d.data.value)
+          .text(d.data.key + ": " + format(d.data.value))
           .attr("text-anchor", "middle")
           .attr("x", (margin*1.7))
           .attr("y", (margin*2)-5)
@@ -898,6 +899,7 @@ pC.update = function(d,gender,race, mouse,firstPie){
       .data(pie(race))
       .enter()
       .append('path')
+      .attr("class","pie")
       .attr('d', arc)
       .attr("fill",function(d,i) {return color_race(i);})
       .on("mouseover", function(d, i) {
@@ -905,7 +907,7 @@ pC.update = function(d,gender,race, mouse,firstPie){
         pieSvg.append("text")
           .attr("class", "pie-text")
           .style("fill", color_race(i))        
-          .text(d.data.key + ":" + d.data.value)
+          .text(d.data.key + ":" + format(d.data.value))
           .attr("text-anchor", "middle")
           .attr("x", (margin*1.7))
           .attr("y", (margin*5.5)-5)
@@ -992,3 +994,4 @@ pC.update = function(d,gender,race, mouse,firstPie){
 // https://stackoverflow.com/questions/25032053/d3-format-thousand-separator-on-variables
 // https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_active_element
 // https://getbootstrap.com/docs/4.0/components/buttons/
+// https://stackoverflow.com/questions/28261287/how-to-change-btn-color-in-bootstrap
