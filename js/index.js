@@ -69,119 +69,19 @@ Promise.all([
   d3.json("processed_data/sent_year_race_gender.json")
 ]).then(function(allData) {
 
-    makeButtons()
+    //makeButtons()
     makeVis2(allData,Configuration.BarCharts);
     
 });
 
 
-function makeButtons() {
-  button_width = 100
-  button_height = 40
-  buttonOpacity = 0.5
-  buttonOpacityHover = 0.9
-
-  IntakeSvg = d3.select("#Intake")
-      .append("svg")
-      .attr("width", (button_width+margin)+"px")
-      .attr("height", (button_height)+"px")
-      .append('g')
-      // .attr("transform", `translate(${margin}, ${margin})`);
-      .attr("transform", 'translate(0,0)')
-
-  IntakeSvg.append("rect")
-      .attr("class", "rect")
-      .attr("width", button_width)
-      .attr("height", button_height)
-      .attr("fill", "#107386")
-      .attr("opacity",buttonOpacity)
-      .on("mouseover", function(d) {
-          d3.select(this)
-          .style('opacity', buttonOpacityHover)
-
-      })
-      .on("mouseout", function(d) {
-          d3.select(this)
-          .style('opacity', buttonOpacity)
-
-      })
-
-  IntakeSvg.append("text")
-      .text("Intake")
-      .attr("transform", "translate(" + (button_width/2) + "," + (button_height/2) + ")")
-      .attr("text-anchor", "middle")
-      .style('fill',"black")
-      .attr('font-size',12);
-
-  dispSvg = d3.select("#Disposition")
-      .append("svg")
-      .attr("width", (button_width+margin)+"px")
-      .attr("height", (button_height)+"px")
-      .append('g')
-      // .attr("transform", `translate(${margin}, ${margin})`);
-      .attr("transform", 'translate(0,0)')
-
-  dispSvg.append("rect")
-      .attr("class", "rect")
-      .attr("width", button_width)
-      .attr("height", button_height)
-      .attr("fill", "#CF1264")
-      .attr("opacity",buttonOpacity)
-      .on("mouseover", function(d) {
-          d3.select(this)
-          .style('opacity', buttonOpacityHover)
-
-      })
-      .on("mouseout", function(d) {
-          d3.select(this)
-          .style('opacity', buttonOpacity)
-
-      })
-
-  dispSvg.append("text")
-      .text("Disposition")
-      .attr("transform", "translate(" + (button_width/2) + "," + (button_height/2) + ")")
-      .attr("text-anchor", "middle")
-      .style('fill',"black")
-      .attr('font-size',12);
-
-  sentSvg = d3.select("#Sentence")
-      .append("svg")
-      .attr("width", (button_width+margin)+"px")
-      .attr("height", (button_height)+"px")
-      .append('g')
-      .attr("transform", 'translate(0,0)')
-
-  sentSvg.append("rect")
-      .attr("class", "rect")
-      .attr("width", button_width)
-      .attr("height", button_height)
-      .attr("fill", "#ff8c00")
-      .attr("opacity",buttonOpacity)
-      .on("mouseover", function(d) {
-          d3.select(this)
-          .style('opacity', buttonOpacityHover)
-
-      })
-      .on("mouseout", function(d) {
-          d3.select(this)
-          .style('opacity', buttonOpacity)
-
-      })
-
-  sentSvg.append("text")
-      .text("Sentencing")
-      .attr("transform", "translate(" + (button_width/2) + "," + (button_height/2) + ")")
-      .attr("text-anchor", "middle")
-      .style('fill',"black")
-      .attr('font-size',12);
-
-}
-
 function makeVis2(allData,Configuration) {
     // console.log(Configuration)
     document.getElementById("Intake").addEventListener('click', function(event) {
 
+      d3.selectAll("#circle_explain")
+      .remove(); 
+      
       d3.selectAll(".pie")
         .transition()
         .duration(1)
@@ -213,10 +113,17 @@ function makeVis2(allData,Configuration) {
           .transition()
           .duration(DISPLAY_TEXT)
           .style("opacity",1)
+
         
       })
 
+      
+
       document.getElementById("Disposition").addEventListener('click', function(event) {
+        
+        d3.selectAll("#circle_explain")
+        .remove();
+        
         d3.selectAll(".pie")
         .transition()
         .duration(1)
@@ -250,6 +157,10 @@ function makeVis2(allData,Configuration) {
         
       })
       document.getElementById("Sentence").addEventListener('click', function(event) {
+        
+        d3.selectAll("#circle_explain")
+        .remove();
+        
         d3.selectAll(".pie")
         .transition()
         .duration(1)
@@ -281,6 +192,18 @@ function makeVis2(allData,Configuration) {
         .style("opacity",0)
         
       })
+    }
+
+    var header = document.getElementById("Buttons");
+    var btns = header.getElementsByClassName("btn");
+    console.log(btns)
+    for (var i = 0; i < btns.length; i++) {
+      console.log(btns[i])
+      btns[i].addEventListener("click", function() {
+      var current = document.getElementsByClassName("active");
+      current[0].className = current[0].className.replace(" active", "");
+      this.className += " active";
+      });
     }
 
 // Function to nest the data and then create Race/Gender arrays
@@ -388,25 +311,27 @@ function moveLineChartLeft() {
 
 
 function makelineChart(data, config) {
-      console.log(viewState)
+      //console.log(viewState)
         // data = data
         var firstPie = 0;
-        console.log(data);
+        //console.log(data);
       /* Format Data */
         var parseDate = d3.timeParse("%Y");
+        //var format = d3.format(",")
         data.forEach(function(d) { 
             //console.log(d)
         d.values.forEach(function(d) {
             d.Year = parseDate(d.key);
-            d.Total = +d.Total;    
-            //console.log(d.Year)
+            d.Total = +d.Total;
+            //d.Total = format(d.Total);    
+            //console.log(d.Total)
         });
         }); 
     /* Scale */
     
     
     var max = data[0].values[0].Total;
-    
+    //console.log(max)
     data.forEach(function(d) {
         d.values.forEach(function(d) {
             if (d.Total > max) {
@@ -422,12 +347,51 @@ function makelineChart(data, config) {
       // console.log(max)
     
     var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+
     
     if (viewState===0) {
       parentElement = createParentElem()
       svg = makeSvg(parentElement,moveChartRight)
 
     }
+
+    // Add explanatory text for circles
+    var svg_circle = parentElement.append("svg").attr("id", "circle_explain")
+      .attr("width", (300)+"px")
+      .attr("height", (200)+"px")
+      .attr("border",1)
+      .append("g")
+      .attr("id", 'circle_explain_text')
+      .attr("transform", 'translate('  + 50 + "," + 50 + ")");
+
+    svg_circle.append("text")
+    .attr('x', 5)
+      .attr('y', 5)
+      // .attr("transform", "rotate(-90)")
+      .attr("fill", "#000")
+      .text("Click on any circle to see the") 
+      
+    svg_circle.append("text")
+      .attr('x', 5)
+      .attr('y', 20)
+      // .attr("transform", "rotate(-90)")
+      .attr("fill", "#000")
+      .text("demographic breakdown for");
+
+    svg_circle.append("text")
+        .attr('x', 5)
+        .attr('y', 35)
+        // .attr("transform", "rotate(-90)")
+        .attr("fill", "#000")
+        .text("that outcome in a given year.");
+        
+    d3.selectAll("#circle_explain")
+      .style("opacity",0)
+      .transition()
+      .delay(2000)
+      .duration(1000)
+      .style("opacity",1)
 
     if (viewState!==0) {
 
@@ -573,6 +537,8 @@ function makelineChart(data, config) {
           }
       })
 
+    format = d3.format(",")
+
     circle = circleGroups
       .selectAll("circle")
       .data(d => d.values).enter()
@@ -583,7 +549,7 @@ function makelineChart(data, config) {
             .style("cursor", "pointer")
             .append("text")
             .attr("class", "text")
-            .text(`${d.Total}`)
+            .text(format(d.Total))
             .attr("x", d => xScale(d.Year) + 5)
             .attr("y", d => yScale(d.Total) - 10);
         })
@@ -775,6 +741,13 @@ function tspan() {
 }
 
 function click(d,firstPie){  // utility function to be called on mouseover.
+    
+  d3.selectAll("#circle_explain")
+    .transition()
+    .duration(1)
+    .attr('opacity',0)
+    .remove();
+
     d3.selectAll(".pie")
     .transition()
     .duration(1)
@@ -1016,3 +989,6 @@ pC.update = function(d,gender,race, mouse,firstPie){
 // http://bl.ocks.org/danharr/af796d91926d254dfe99
 // https://codepen.io/zakariachowdhury/pen/JEmjwq
 // https://bl.ocks.org/susielu/23dc3082669ee026c552b85081d90976
+// https://stackoverflow.com/questions/25032053/d3-format-thousand-separator-on-variables
+// https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_active_element
+// https://getbootstrap.com/docs/4.0/components/buttons/

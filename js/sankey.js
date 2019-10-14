@@ -95,127 +95,11 @@ function make_sankey(data, year) {
 
     })
 
-    // save default node positions from 2018
-    if (year === "2018") {
-      links.forEach(function(d) {
-        //console.log(d)
-         if (d.target.name === "Approved") {
-             approved_x0 = d.target.x0;
-             approved_x1 = d.target.x1;
-             approved_y0 = d.target.y0;
-             approved_y1 = d.target.y1;
-         }
-
-         if (d.target.name === "Continued Investigation") {
-            ci_x0 = d.target.x0;
-            ci_x1 = d.target.x1;
-            ci_y0 = d.target.y0;
-            ci_y1 = d.target.y1;
-        }
-
-        if (d.source.name === "Continued Investigation") {
-          ci_x0 = d.source.x0;
-          ci_x1 = d.source.x1;
-          ci_y0 = d.source.y0;
-          ci_y1 = d.source.y1;
-      }
-
-        if (d.target.name === "Filed by LEA") {
-            lea_x0 = d.target.x0;
-            lea_x1 = d.target.x1;
-            lea_y0 = d.target.y0;
-            lea_y1 = d.target.y1;
-        }
-
-        if (d.source.name === "Filed by LEA") {
-          lea_x0 = d.source.x0;
-          lea_x1 = d.source.x1;
-          lea_y0 = d.source.y0;
-          lea_y1 = d.source.y1;
-      }
-
-
-
-        if (d.target.name === "Other") {
-          other_x0 = d.target.x0;
-          other_x1 = d.target.x1;
-          other_y0 = d.target.y0;
-          other_y1 = d.target.y1;
-      }
-        if (d.target.name === "Rejected") {
-          rej_x0 = d.target.x0;
-          rej_x1 = d.target.x1;
-          rej_y0 = d.target.y0;
-          rej_y1 = d.target.y1;
-      }
-
- 
-     })
-
-    }
-
-    links.forEach(function(d) {
-      console.log(d)
-        if (d.target.name === "Approved") {
-          d.target.x0 = approved_x0;
-          d.target.x1 = approved_x1;
-          d.target.y0 = approved_y0;
-          d.target.y1 = approved_y1;
-        }
-
-        if (d.target.name === "Continued Investigation") {
-          d.target.x0 = ci_x0;
-          d.target.x1 = ci_x1;
-          d.target.y0 = ci_y0;
-          d.target.y1 = ci_y1;
-        }
-
-        if (d.source.name === "Continued Investigation") {
-          d.source.x0 = ci_x0;
-          d.source.x1 = ci_x1;
-          d.source.y0 = ci_y0;
-          d.source.y1 = ci_y1;
-        }
-
-      if (d.target.name === "Filed by LEA") {
-          d.target.x0 = lea_x0;
-          d.target.x1 = lea_x1;
-          d.target.y0 = lea_y0;
-          d.target.y1 = lea_y1;
-
-        }
-
-        if (d.source.name === "Continued Investigation") {
-          d.source.x0 = lea_x0;
-          d.source.x1 = lea_x1;
-          d.source.y0 = lea_y0;
-          d.source.y1 = lea_y1;
-        }
-      
-      if (d.target.name === "Other") {
-        d.target.x0 = other_x0;
-        d.target.x1 = other_x1;
-        d.target.y0 = other_y0;
-        d.target.y1 = other_y1;
-
-      }
-      
-      if (d.target.name === "Rejected") {
-
-        d.target.x0 = rej_x0;
-        d.target.x1 = rej_x1;
-        d.target.y0 = rej_y0;
-        d.target.y1 = rej_y1;
-      }
-
-   })
-
-
     var node = svg.append("g")
     .attr("class", "nodes")
     .attr("font-family", "tahoma")
     .attr("font-size", 10)
-  .selectAll("g");
+    .selectAll("g");
 
   node = node
     .data(nodes)
@@ -388,4 +272,5 @@ d3.select("#sankey")
     .append('g')
     .attr("transform","translate(30,60)")
     .attr("class", "annotation-group")
+    .attr("font-family","tahoma")
     .call(makeAnnotations)

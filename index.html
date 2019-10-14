@@ -24,10 +24,13 @@
          <p> The purpose of this dashboard is to allow viewers to explore the SAO datasets - specifically the Intake, Dispositions, and Sentencing Datasets. The flow diagram below shows the life cycle of cases and their outcomes in each year. The slider can be used to change the year the cases were initiated. The slider is set to 2018 since the data is more complete - far more cases are pending in 2019.</p>
          <h5> Click below to explore datasets further</h5>
          <div class = "row">
-            <div class = "row-header ">
-                <div id = "Intake"></div>
-                <div id = "Disposition"></div>
-                <div id = "Sentence"></div>  
+            <!-- https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_active_element -->
+            <div id="Buttons">
+                <button type="button" class="btn btn-primary active" id = "Intake"> Intake </button>
+
+                <button type="button" class="btn btn-secondary" id = "Disposition"> Disposition </button>
+                
+                <button type="button" class="btn btn-success" id = "Sentence"> Sentencing</button>  
             </div>
     </div>
       </div>
@@ -43,15 +46,15 @@
     <div class=text-container>
         <div class=inner id= Intake > 
           <p>The Intake dataset represents all cases that enter the State's Attorney's Office (SAO). Most cases come into the system through a process known as felony review, where the SAO makes a decision about whether or not to prosecute. In case of narcotics, the cases can be filed directly by law enforcement agencies (LEA). The chart below shows the outcomes for cases that enter the system.</p>
-          <h6> Click on any circle to see the demographic breakdown for that outcome in a given year</h6>
+        
         </div>
         <div class=inner id= Disposition> 
           <p> The Dispositions dataset represents the result of the fact-finding process for each charge brought against each case participant, since a case can have multiple participants and each participant can have multiple charges against them. The chart here reflects the year the case was initiated, rather than the year that the charges were disposed of. For example, 22,860 of the case participants initiated in the system received convictions, though they may have received convictions well after 2015. The outcomes here also reflect whether any of the multiple charges against a case participant result in a conviction. </p>
-          <h6> Click on any circle to see the demographic breakdown for that outcome in a given year</h6>
+          
         </div>
         <div class=inner id= Sentencing> 
             <p> The Sentencing dataset represents the sentence given to each case participant that is convicted of at least one charge. The chart here reflects the year the case was initiated, rather than the year that the charges received a sentence. For example, 11,888 of the case participants initiated in the system in 2015 received a prison sentence, though the actual sentence may have been imposed at a later date. </p>
-            <h6> Click on any circle to see the demographic breakdown for that outcome in a given year</h6>
+        
         </div>
     </div>
 

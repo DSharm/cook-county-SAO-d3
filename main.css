@@ -15,6 +15,7 @@ p {
   margin-bottom: 25px;
   font-size: 14px;
   line-height: 18px;
+  font-family: "tahoma"
 }
 
 text {
@@ -54,6 +55,11 @@ text:hover {
   padding: 20px;
   margin-left: 20px;
   justify-content: flex-end;
+  font-family: "tahoma"
+}
+
+.axis {
+  font-family: "tahoma"
 }
 
 
@@ -107,7 +113,7 @@ h2 {
 .text-container {
   display: flex;
   justify-content: start;
-  margin-bottom: 70px;
+  margin-bottom: 30px;
 }
 
 .inner {
@@ -140,10 +146,57 @@ h2 {
   cursor:pointer
 }
 
-rect:hover {
+/* rect:hover {
   opacity: 0.9;
+} */
+
+.btn {
+  border: none;
+  outline: none;
+  padding: 10px 16px;
+  background-color: #f1f1f1;
+  cursor: pointer;
+  font-size: 50px;
 }
 
+.btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
+  background-color: #107386 !important;
+  border-color: #107386 !important;
+}
+
+.btn-primary:hover, .btn-primary:active, .btn-primary:visited, .btn-primary:focus {
+  background-color: #107386 !important;
+  border-color: #107386 !important;
+  box-shadow: 0 0 0 0.2rem rgba(100, 101, 102, 0.5) !important;
+}
+
+.btn-secondary, .btn-secondary:hover, .btn-secondary:active, .btn-secondary:visited {
+  background-color: #CF1264 !important;
+  border-color: #CF1264 !important;
+}
+
+.btn-secondary:hover, .btn-secondary:active, .btn-secondary:visited, .btn-secondary:focus {
+  background-color: #CF1264 !important;
+  border-color: #CF1264 !important;
+  box-shadow: 0 0 0 0.2rem rgba(100, 101, 102, 0.5) !important;
+}
+
+
+
+.btn-success, .btn-success:hover, .btn-success:active, .btn-success:visited {
+  background-color: #ff8c00 !important;
+  border-color: #ff8c00 !important;
+}
+.btn-success:hover, .btn-success:active, .btn-success:visited, .btn-success:focus {
+  background-color: #ff8c00 !important;
+  border-color: #ff8c00 !important;
+  box-shadow: 0 0 0 0.2rem rgba(100, 101, 102, 0.5) !important;
+}
+
+/* .active, .btn:hover{
+  background-color: #666;
+  color: white;
+} */
 
 /* Footer */
 #footer {
