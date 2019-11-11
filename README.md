@@ -4,6 +4,7 @@ The Cook County State’s Attorney’s Office (SAO) is the second largest prosec
 The purpose of this dashboard is to allow viewers to explore the SAO datasets - specifically the Intake, Dispositions, and Sentencing Datasets. 
 
 Visualization can be accessed here: https://dsharm.github.io/cook-county-SAO-d3/
+
 SAO data: https://datacatalog.cookcountyil.gov/browse?tags=state%27s%20attorney%20case-level&sortBy=most_accessed
 
 
